@@ -39,19 +39,19 @@
 
 > The "E.I.R.E" Project, acronymic for "Efforts in Incremental Rescaling of Ethereum," anchors its vision on alleviating the persisting scalability woes of the Ethereum network by judiciously leveraging the capabilities of zero-knowledge proofs. Focused on magnifying transaction throughput without besieging the network with additional load, our approach is bifurcated into a primary and a secondary objective, each one being a viable path to tackling the outlined problem.
 
-Primary Objective: Our paramount aim is to engineer a Zero-Knowledge Virtual Machine (ZKVM) that allows general computations to be performed off-chain, while maintaining a secure and verifiable link to the Ethereum mainnet. This encompasses:
+> Primary Objective: Our paramount aim is to engineer a Zero-Knowledge Virtual Machine (ZKVM) that allows general computations to be performed off-chain, while maintaining a secure and verifiable link to the Ethereum mainnet. This encompasses:
 
-Constructing a Minimalistic VM: Developing a virtual machine with a confined instruction set to validate the concept of executing assorted computations off-chain.
-Zero-Knowledge Circuits: Drafting zk-SNARK or zk-STARK circuits that confirm the veracity of computations made by our VM without unveiling the intrinsic data of the operations.
-Batch Verification & On-Chain Synchronization: Implementing a system to batch verification proofs and subsequently synchronize them with the Ethereum mainnet, confirming the integrity and reliability of off-chain computations.
-In the realm of this objective, it's noteworthy to underscore that the VM isn't a pathway to scaling; rather, it provides a platform for a variety of computations to be executed off-chain, while zero-knowledge proofs ensure these computations can be verified on-chain without executing them directly, thereby saving computational resources and enhancing transaction throughput.
+> Constructing a Minimalistic VM: Developing a virtual machine with a confined instruction set to validate the concept of executing assorted computations off-chain.
+> Zero-Knowledge Circuits: Drafting zk-SNARK or zk-STARK circuits that confirm the veracity of computations made by our VM without unveiling the intrinsic data of the operations.
+> Batch Verification & On-Chain Synchronization: Implementing a system to batch verification proofs and subsequently synchronize them with the Ethereum mainnet, confirming the integrity and reliability of off-chain computations.
+> In the realm of this objective, it's noteworthy to underscore that the VM isn't a pathway to scaling; rather, it provides a platform for a variety of computations to be executed off-chain, while zero-knowledge proofs ensure these computations can be verified on-chain without executing them directly, thereby saving computational resources and enhancing transaction throughput.
 
-Secondary Objective: Should the development of the ZKVM encounter intractable challenges or be inhibited by time constraints, our initiative will pivot to sculpting a Zero-Knowledge Rollup, distinctly focusing on enhancing the Ethereum network's transaction scalability by utilizing zero-knowledge proofs to validate batched transactions off-chain before they are recorded on-chain. The major architectural facets will include:
+> Secondary Objective: Should the development of the ZKVM encounter intractable challenges or be inhibited by time constraints, our initiative will pivot to sculpting a Zero-Knowledge Rollup, distinctly focusing on enhancing the Ethereum network's transaction scalability by utilizing zero-knowledge proofs to validate batched transactions off-chain before they are recorded on-chain. The major architectural facets will include:
 
-Transaction Aggregator: Implementing an off-chain component responsible for collecting, batching, and managing numerous transactions efficiently.
-Zero-Knowledge Proof Generation: Developing a mechanism to create zero-knowledge proofs that affirm the legitimacy of batched transactions without revealing their intrinsic details.
-On-Chain Verifier: Embedding an on-chain component tasked with scrutinizing and verifying the provided zero-knowledge proofs, thereby ensuring the genuineness and security of transactions before they’re permanently recorded on the blockchain.
-Our journey through the E.I.R.E project will delve deep into intricate blockchain paradigms, exploring novel methodologies to scale the Ethereum network while preserving its decentralization and security tenets, with our north star being a more scalable, accessible, and user-friendly blockchain.
+> Transaction Aggregator: Implementing an off-chain component responsible for collecting, batching, and managing numerous transactions efficiently.
+> Zero-Knowledge Proof Generation: Developing a mechanism to create zero-knowledge proofs that affirm the legitimacy of batched transactions without revealing their intrinsic details.
+> On-Chain Verifier: Embedding an on-chain component tasked with scrutinizing and verifying the provided zero-knowledge proofs, thereby ensuring the genuineness and security of transactions before they’re permanently recorded on the blockchain.
+> Our journey through the E.I.R.E project will delve deep into intricate blockchain paradigms, exploring novel methodologies to scale the Ethereum network while preserving its decentralization and security tenets, with our north star being a more scalable, accessible, and user-friendly blockchain.
 
 ### Background
 
@@ -100,34 +100,34 @@ Our journey through the E.I.R.E project will delve deep into intricate blockchai
 
 > Zero-Knowledge Component Development:
 
-Formulate and fine-tune zk-SNARK or zk-STARK circuits, ensuring a confidential and verifiable link between off-chain computations and on-chain validations.
+> Formulate and fine-tune zk-SNARK or zk-STARK circuits, ensuring a confidential and verifiable link between off-chain computations and on-chain validations.
 
-Undertake extensive testing of zk circuits to substantiate their efficacy in proof generation without disclosing underlying data.
+> Undertake extensive testing of zk circuits to substantiate their efficacy in proof generation without disclosing underlying data.
 
 
 > Virtual Machine (VM) Development:
 
-Spearhead the conception and development of a minimalistic VM, focusing on executing simple computations off-chain, verified through the zero-knowledge circuits.
-Ensure the seamless integration of VM operations with zk circuits, facilitating authentic and reliable proof generation.
+> Spearhead the conception and development of a minimalistic VM, focusing on executing simple computations off-chain, verified through the zero-knowledge circuits.
+> Ensure the seamless integration of VM operations with zk circuits, facilitating authentic and reliable proof generation.
 
 > Integration and Interaction with Node/Sequencer Components:
 
-Work closely with Zak in areas where the VM and zk components interact with the node/sequencer components, ensuring a smooth flow and interaction between off-chain and on-chain elements.
+> Work closely with Zak in areas where the VM and zk components interact with the node/sequencer components, ensuring a smooth flow and interaction between off-chain and on-chain elements.
 
 #### Student 2
 
 > Node/Sequencer Component Development:
 
-Govern the architecture and establishment of node/sequencer components, overseeing the aggregation of transactions, generating zk proofs utilizing the circuits crafted by Senan, and submitting them to the Ethereum mainnet.
-Ascertain that the node/sequencer efficiently and securely manages transactions, proofs, and communicates efficaciously with the Ethereum network.
+> Govern the architecture and establishment of node/sequencer components, overseeing the aggregation of transactions, generating zk proofs utilizing the circuits crafted by Senan, and submitting them to the Ethereum mainnet.
+> Ascertain that the node/sequencer efficiently and securely manages transactions, proofs, and communicates efficaciously with the Ethereum network.
 
 > On-Chain Verification Component Development:
 
-Oversee the development of robust on-chain components that effectively verify zk proofs and finalize batched transactions on the Ethereum mainnet, ensuring operations are gas-efficient and secure.
+> Oversee the development of robust on-chain components that effectively verify zk proofs and finalize batched transactions on the Ethereum mainnet, ensuring operations are gas-efficient and secure.
 
 > Collaborative Development with zk and VM Components:
 
-Collaborate with Senan in developmental areas that require interaction and data exchange between the zk and VM components and the node/sequencer, ensuring coherent and reliable system functionality.
+> Collaborate with Senan in developmental areas that require interaction and data exchange between the zk and VM components and the node/sequencer, ensuring coherent and reliable system functionality.
 
 
 ## Example
