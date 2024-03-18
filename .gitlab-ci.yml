@@ -39,6 +39,8 @@ before_script:
     - cd verify_sig
     - chmod +x test.sh
     - ./test.sh
+  dependencies:
+    - prepare_circom
   only:
     changes:
       - src/circuits/verify_sig/**/*
