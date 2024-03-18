@@ -1,0 +1,89 @@
+/* Basic Reset */
+html, body, div, span, h1, h2, h3, h4, h5, h6, p,
+a, ul, li, footer, header {
+  margin: 0;
+  padding: 0;
+  border: 0; 
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+footer, header,nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+blockquote, q {
+  quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  color: #cfd8dc; 
+  background-color: #263238; 
+  line-height: 1.5;
+  font-size: 16px;
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 1rem;
+  color: #81c784; 
+  font-weight: 400;
+}
+
+a {
+  color: #ffab91;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #ff5722; 
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 15px;
+  }
+}
+
+/* Accessibility */
+
+:focus {
+  outline: 3px solid #81c784; 
+  outline-offset: 2px;
+}
