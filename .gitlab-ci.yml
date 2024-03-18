@@ -2,10 +2,13 @@ stages:
   - install
   - lint
   - build
+  - test
+
 
 # defining path to the directory so jobs can find package.json
 variables:
   FRONTEND_DIR: src/frontend/vocca
+  CARGO_HOME: "$CI_PROJECT_DIR/cargo"
 
 # use cache instead of artifacts for node_modules to save space and share it across the jobs
 cache:
@@ -14,7 +17,71 @@ cache:
     - src/frontend/vocca/node_modules/
 
 # change to directory
-#before_script:
+before_script:
+  - export PATH="$CARGO_HOME/bin:$PATH"
+  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  - source "$CARGO_HOME/env"
+  # Install circom, adjust the installation command as needed based on the correct circom structure
+  - git clone https://github.com/iden3/circom.git
+  - cd circom
+  - cargo build --release
+  # Assuming the binary is directly in the target/release after build
+  - cargo install --path circom
+  - cd ..
+
+  test_verify_sig:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_sig
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_sig/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
+
+test_verify_merkle:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_merkle
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_merkle/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
+
+test_verify_single_tx:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_single_tx
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_single_tx/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
 
 install_dependencies:
   stage: install
