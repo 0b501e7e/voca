@@ -7,7 +7,7 @@ cache:
     - node_modules/
     - $HOME/.cargo/bin/
     - $HOME/.cargo/registry/
-    - circom/target/
+    - circom/target/release/circom
 
 before_script:
   - export PATH="$HOME/.cargo/bin:$PATH"
