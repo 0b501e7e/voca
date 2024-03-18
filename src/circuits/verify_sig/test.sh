@@ -21,8 +21,9 @@ echo "Starting new Powers of Tau ceremony..."
 snarkjs powersoftau new bn128 14 pot14_0000.ptau -v
 
 # Contribute to ceremony
+# TODO: Replace the echo "randomstring" with an actual random string
 echo "Contributing to ceremony..."
-snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First contribution" -v
+echo "randomstring" | snarkjs powersoftau contribute pot14_0000.ptau pot14_0001.ptau --name="First contribution" -v
 
 # Phase 2
 echo "Preparing phase 2..."
@@ -34,7 +35,7 @@ snarkjs groth16 setup ../eddsa.r1cs pot14_final.ptau eddsa_0000.zkey
 
 # Contribute to Phase 2 of the ceremony
 echo "Contributing to Phase 2 of the ceremony..."
-snarkjs zkey contribute eddsa_0000.zkey eddsa_0001.zkey --name="1st Contributor Name" -v
+echo "randomstring" | snarkjs zkey contribute eddsa_0000.zkey eddsa_0001.zkey --name="1st Contributor Name" -v
 
 # Export the Verification key
 echo "Exporting the verification key..."

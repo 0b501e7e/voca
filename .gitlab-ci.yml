@@ -1,30 +1,36 @@
 stages:
-  - build
+  - prepare
   - test
 
-variables:
-  DOCKER_IMAGE_NAME: $CI_REGISTRY_IMAGE/circuit-tester:$CI_COMMIT_REF_SLUG
+cache:
+  paths:
+    - node_modules/
+    - $HOME/.cargo/bin/
+    - $HOME/.cargo/registry/
+    - circom/target/
 
 before_script:
-  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  - export PATH="$HOME/.cargo/bin:$PATH"
 
-# Stage for building the Docker image
-build_image:
-  stage: build
+prepare_circom:
+  stage: prepare
   script:
-    - docker build -t $DOCKER_IMAGE_NAME .
-    - docker push $DOCKER_IMAGE_NAME
+    - which circom || (curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y)
+    - source $HOME/.cargo/env
+    - which circom || (git clone https://github.com/iden3/circom.git && cd circom && cargo build --release && cargo install --path .)
   only:
     - master
     - development
     - merge_requests
 
-# Stage for running tests on the `verify_sig` circuit
 test_verify_sig:
   stage: test
   script:
-    - docker pull $DOCKER_IMAGE_NAME
-    - docker run --rm $DOCKER_IMAGE_NAME verify_sig
+    - cd src/circuits/verify_sig
+    - npm install
+    - chmod +x test.sh
+    - ./test.sh
   only:
     - master
+    - development
     - merge_requests
