@@ -1,49 +1,30 @@
 stages:
-  - prepare
   - test
 
-cache:
-  paths:
-    - node_modules/
-    - $HOME/.cargo/bin/
-    - $HOME/.cargo/registry/
-    - circom/target/release/circom
+variables:
+  CARGO_HOME: "$CI_PROJECT_DIR/cargo"
 
 before_script:
-  - export PATH="$HOME/.cargo/bin:$PATH"
-
-prepare_circom:
-  stage: prepare
-  script:
-    - which circom || (curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y)
-    - source $HOME/.cargo/env
-    - if [ ! -f "$HOME/.cargo/bin/circom" ]; then
-        git clone https://github.com/iden3/circom.git && cd circom && cargo build --release;
-        cargo install --path circom;
-      fi
-  artifacts:
-    paths:
-      - $HOME/.cargo/bin/circom
-  only:
-    - master
-    - development
-    - merge_requests
-
+  - export PATH="$CARGO_HOME/bin:$PATH"
+  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  - source "$CARGO_HOME/env"
+  # Install circom, adjust the installation command as needed based on the correct circom structure
+  - git clone https://github.com/iden3/circom.git
+  - cd circom
+  - cargo build --release
+  # Assuming the binary is directly in the target/release after build
+  - cargo install --path circom
+  - cd ..
 
 test_verify_sig:
   stage: test
   script:
-    - export PATH="$HOME/.cargo/bin:$PATH"
-    - which circom || echo "Circom not found"
+    - circom --version || echo "Circom not found"
     - cd src/circuits/verify_sig
     - npm install
     - chmod +x test.sh
     - ./test.sh
-  dependencies:
-    - prepare_circom
   only:
     - master
     - development
     - merge_requests
-
-
