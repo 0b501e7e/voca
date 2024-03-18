@@ -17,7 +17,7 @@ prepare_circom:
   script:
     - which circom || (curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y)
     - source $HOME/.cargo/env
-    - which circom || (git clone https://github.com/iden3/circom.git && cd circom && cargo build --release && cargo install --path target/release/circom)
+    - which circom || (git clone https://github.com/iden3/circom.git && cd circom && cargo build --release && cargo install --path ../target/release/circom)
   only:
     - master
     - development
