@@ -26,6 +26,8 @@ prepare_circom:
 test_verify_sig:
   stage: test
   script:
+    - export PATH="$HOME/.cargo/bin:$PATH"
+    - which circom || echo "Circom not found"
     - cd src/circuits/verify_sig
     - npm install
     - chmod +x test.sh
@@ -34,3 +36,4 @@ test_verify_sig:
     - master
     - development
     - merge_requests
+
