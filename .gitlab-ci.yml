@@ -20,8 +20,9 @@ test_verify_sig:
   stage: test
   script:
     - circom --version || echo "Circom not found"
-    - cd src/circuits/verify_sig
+    - cd src/circuits
     - npm install
+    - cd  verify_sig
     - chmod +x test.sh
     - ./test.sh
   only:
