@@ -1,0 +1,17 @@
+{
+  "name": "circuits",
+  "version": "1.0.0",
+  "description": "This directory contains zk-SNARK circuits for the zk-rollup. It includes implementations for transaction verification, signature validation, and state transition proofs using Circom. Circuits are designed to ensure security and efficiency in processing rollup transactions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "big-integer": "^1.6.52",
+    "circomlib": "^2.0.5",
+    "circomlibjs": "^0.0.8"
+  }
+}
