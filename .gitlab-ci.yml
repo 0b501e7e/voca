@@ -4,33 +4,26 @@ stages:
 variables:
   CARGO_HOME: "$CI_PROJECT_DIR/cargo"
 
-cache:
-  paths:
-    - $CARGO_HOME/registry
-    - $CARGO_HOME/git
-    - circom/target
-    - src/circuits/node_modules/
-
 before_script:
   - export PATH="$CARGO_HOME/bin:$PATH"
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   - source "$CARGO_HOME/env"
-  - if [ ! -f "$CARGO_HOME/bin/circom" ]; then
-      git clone https://github.com/iden3/circom.git &&
-      cd circom &&
-      cargo build --release &&
-      cargo install --path circom;
-    fi
+  # Install circom, adjust the installation command as needed based on the correct circom structure
+  - git clone https://github.com/iden3/circom.git
+  - cd circom
+  - cargo build --release
+  # Assuming the binary is directly in the target/release after build
+  - cargo install --path circom
   - cd ..
 
 test_verify_sig:
   stage: test
   script:
     - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
     - cd src/circuits
     - npm install
-    - npx snarkjs --help || echo "SnarkJS not found"
-    - cd verify_sig
+    - cd  verify_sig
     - chmod +x test.sh
     - ./test.sh
   only:
