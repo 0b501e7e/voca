@@ -17,11 +17,18 @@ prepare_circom:
   script:
     - which circom || (curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y)
     - source $HOME/.cargo/env
-    - which circom || (git clone https://github.com/iden3/circom.git && cd circom && cargo build --release && cargo install --path circom)
+    - if [ ! -f "$HOME/.cargo/bin/circom" ]; then
+        git clone https://github.com/iden3/circom.git && cd circom/circom && cargo build --release;
+        cargo install --path circom;
+      fi
+  artifacts:
+    paths:
+      - $HOME/.cargo/bin/circom
   only:
     - master
     - development
     - merge_requests
+
 
 test_verify_sig:
   stage: test
@@ -32,8 +39,11 @@ test_verify_sig:
     - npm install
     - chmod +x test.sh
     - ./test.sh
+  dependencies:
+    - prepare_circom
   only:
     - master
     - development
     - merge_requests
+
 
