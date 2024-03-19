@@ -52,7 +52,7 @@ test_verify_merkle:
       - development
       - merge_requests
 
-test_verify_single_tx
+test_verify_single_tx:
   stage: test
   script:
     - circom --version || echo "Circom not found"
