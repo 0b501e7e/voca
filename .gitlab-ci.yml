@@ -51,3 +51,21 @@ test_verify_merkle:
       - master
       - development
       - merge_requests
+
+test_verify_single_tx
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_single_tx
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_single_tx/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
