@@ -23,10 +23,31 @@ test_verify_sig:
     - npm install -g snarkjs
     - cd src/circuits
     - npm install
-    - cd  verify_sig
+    - cd verify_sig
     - chmod +x test.sh
     - ./test.sh
   only:
-    - master
-    - development
-    - merge_requests
+    changes:
+      - src/circuits/verify_sig/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
+
+test_verify_merkle:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_sig
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_merkle/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
