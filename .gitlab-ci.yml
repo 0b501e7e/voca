@@ -10,8 +10,6 @@ variables:
   FRONTEND_DIR: src/frontend/vocca
   CARGO_HOME: "$CI_PROJECT_DIR/cargo"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 # use cache instead of artifacts for node_modules to save space and share it across the jobs
 cache:
   key: ${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_IID}
@@ -19,53 +17,25 @@ cache:
     - src/frontend/vocca/node_modules/
 
 # change to directory
-=======
-cache:
-  paths:
-    - $CARGO_HOME/registry
-    - $CARGO_HOME/git
-    - circom/target
-    - src/circuits/node_modules/
-
->>>>>>> cf6639d (last commit works --try to optimise)
-=======
->>>>>>> 405eb5e (Revert "last commit works --try to optimise")
 before_script:
   - export PATH="$CARGO_HOME/bin:$PATH"
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   - source "$CARGO_HOME/env"
-  # Install circom, adjust the installation command as needed based on the correct circom structure
-  - git clone https://github.com/iden3/circom.git
-  - cd circom
-  - cargo build --release
-  # Assuming the binary is directly in the target/release after build
-  - cargo install --path circom
+  - if [ ! -f "$CARGO_HOME/bin/circom" ]; then
+      git clone https://github.com/iden3/circom.git &&
+      cd circom &&
+      cargo build --release &&
+      cargo install --path circom;
+    fi
   - cd ..
 
   test_verify_sig:
   stage: test
   script:
     - circom --version || echo "Circom not found"
-    - npm install -g snarkjs
     - cd src/circuits
     - npm install
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    - npx snarkjs --help || echo "SnarkJS not found"
->>>>>>> cf6639d (last commit works --try to optimise)
     - cd verify_sig
-=======
-    - cd  verify_sig
->>>>>>> 405eb5e (Revert "last commit works --try to optimise")
-=======
-    - cd verify_sig
->>>>>>> a469eaa (reattempt to cache circom)
-=======
-    - cd  verify_sig
->>>>>>> b884196 (Revert "reattempt to cache circom")
     - chmod +x test.sh
     - ./test.sh
   only:
