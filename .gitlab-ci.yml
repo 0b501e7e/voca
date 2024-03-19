@@ -41,7 +41,7 @@ test_verify_merkle:
     - npm install -g snarkjs
     - cd src/circuits
     - npm install
-    - cd verify_sig
+    - cd verify_merkle
     - chmod +x test.sh
     - ./test.sh
   only:
