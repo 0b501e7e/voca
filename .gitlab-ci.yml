@@ -23,14 +23,16 @@ test_verify_sig:
     - npm install -g snarkjs
     - cd src/circuits
     - npm install
-    - cd  verify_sig
+    - cd verify_sig
     - chmod +x test.sh
     - ./test.sh
   only:
-    - master
-    - development
-    - merge_requests
-
+    changes:
+      - src/circuits/verify_sig/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
 
 test_verify_merkle:
   stage: test
@@ -39,10 +41,13 @@ test_verify_merkle:
     - npm install -g snarkjs
     - cd src/circuits
     - npm install
-    - cd  verify_merkle
+    - cd verify_merkle
     - chmod +x test.sh
     - ./test.sh
   only:
-    - master
-    - development
-    - merge_requests
+    changes:
+      - src/circuits/verify_merkle/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
