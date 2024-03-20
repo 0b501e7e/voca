@@ -1,0 +1,32 @@
+.footerContainer {
+  background-color: hsl(0, 0%, 7%);
+  color: #fcd535;
+  padding: 20px;
+  text-align: center;
+}
+
+.footerLinks {
+  list-style: none;
+  padding: 0;
+  margin: 5px 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.footerLink {
+  color: #f0b90b;
+  text-decoration: none;
+  transition: color 0.3s ease-in-out;
+}
+
+.footerLink:hover {
+  color: #fcd535;
+  text-decoration: none;
+}
+
+.footerCredits {
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: white;
+}

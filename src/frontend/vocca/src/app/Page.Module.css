@@ -1,0 +1,64 @@
+.pageContainer {
+  background-color: #121212;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.infoSection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.infoDiv {
+  flex: 1;
+  margin: 100px 0px;
+}
+
+.imageDiv {
+  flex: 1;
+  /* to center image */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.infoTitle {
+  font-size: 2rem;
+  color: #fcd535;
+}
+
+.infoParagraph {
+  font-size: 1.2rem;
+  margin-top: 10px;
+  color: white;
+}
+
+.infoButton {
+  background-color: #f0b90b;
+  color: #0b0e11;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  margin-top: 20px;
+}
+
+.infoButton:hover {
+  background-color: #fcd535;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .pageHeader,
+  .infoSection {
+    flex-direction: column;
+  }
+}

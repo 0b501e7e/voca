@@ -1,40 +1,66 @@
-import React from 'react';
+import React from "react";
+import styles from "./Page.module.css";
+import Image from "next/image"; // Import the Image component
+import img1 from "../../public/off-chain.png";
+import img2 from "../../public/gaurd.png";
+import img3 from "../../public/signup.png";
+import { info } from "console";
 
 const HomePage = () => {
   return (
-    <div>
-      <header>
-        <h1>VOCA</h1>
-        <p>To enhance Ethereum network scalability</p>
+    <div className={styles.pageContainer}>
+      {/* header content */}
+      <header className={styles.pageHeader}>
+        <div className={styles.infoDiv}>
+          <h1 className={styles.infoTitle}>What is VOCCA ?</h1>
+          <p className={styles.infoParagraph}>
+            Welcome to our project, where we're exploring off-chain
+            transactions. Our approach harnesses the power of zk rollups to
+            bring you faster, more efficient, and secure transactions
+          </p>
+        </div>
+        <div className={styles.imageDiv}>
+          <Image src={img1} alt="Logo" width={350} height={350} />{" "}
+        </div>
       </header>
 
-      <section>
-        <h2>Introduction</h2>
-        <p>
-          VOCA (Verifiable Off-Chain Computations are Awesome) is a project designed to enhance the scalability of the Ethereum network by implementing a zk rollup mechanism for ether/ERC20 transfers. This approach will leverage the efficiency of zk-SNARKs to process transactions off-chain, significantly improving transaction throughput on the Ethereum network.
-        </p>
-      </section>
+      <main>
+        <div className={styles.infoSection}>
+          <div className={styles.imageDiv}>
+            <Image src={img2} alt="Logo" width={400} height={400} />{" "}
+          </div>
+          <div className={styles.infoDiv}>
+            <h1 className={styles.infoTitle}>
+              A ZK rollup Focused on Secure, and Scalable Off-Chain Transactions
+            </h1>
+            <p className={styles.infoParagraph}>
+              We streamline your transactions by intelligently grouping them
+              off-chain, a strategy that boosts processing. Through the advanced
+              security of zero-knowledge proofs, notably zk-SNARKs, we ensure
+              your transactions are validated and secure. This innovative
+              approach allows us to verify transactions with precision, all
+              while fully safeguarding your privacy.
+            </p>
+          </div>
+        </div>
 
-      <section>
-        <h2>Project Overview</h2>
-        <h3>Goals</h3>
-        <ul>
-          <li>Create a scalable solution for Ethereum transactions.</li>
-          <li>Implement a zero-knowledge rollup system for efficient off-chain transaction processing.</li>
-          <li>Minimize processing time and costs associated with ether/ERC20 transfers.</li>
-          <li>Ensure security and integrity of transactions using zk-SNARKs through the processing stages.</li>
-        </ul>
-
-        <h3>Scope</h3>
-        <p>
-          The project will focus primarily on ether and ERC20 token transfers, using zk rollups to streamline transaction processing. It will involve:
-        </p>
-        <ul>
-          <li>Creating Off-Chain Transaction Aggregation measures, along with batching transactions, preparing them for off-chain processing.</li>
-          <li>Zero-Knowledge Proof Generation: Utilizes zk-SNARKs to create cryptographic proofs that validate the transactions in a privacy-preserving manner.</li>
-          <li>On-Chain Verification: A smart contract on the Ethereum blockchain that verifies the zero-knowledge proofs and updates the blockchain state accordingly.</li>
-        </ul>
-      </section>
+        <div className={styles.infoSection}>
+          <div className={styles.infoDiv}>
+            <h1 className={styles.infoTitle}>Get Started Now</h1>
+            <p className={styles.infoParagraph}>
+              Dive into transactions with VOCCA, simplfying the process for
+              ERC20/ether transfers, making it accessible with just a few
+              clicks. Join us on our journey and experience our transaction
+              processing technology. Click "Connect Your Wallet" and start with
+              VOCCA today.
+            </p>
+            <button className={styles.infoButton}>Connect Your Wallet</button>
+          </div>
+          <div className={styles.imageDiv}>
+            <Image src={img3} alt="Logo" width={350} height={350} />{" "}
+          </div>
+        </div>
+      </main>
     </div>
   );
 };
