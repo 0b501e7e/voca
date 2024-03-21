@@ -13,6 +13,18 @@ cache:
   paths:
     - src/frontend/vocca/node_modules/
 
+before_script:
+  - export PATH="$CARGO_HOME/bin:$PATH"
+  - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+  - source "$CARGO_HOME/env"
+  # Install circom, adjust the installation command as needed based on the correct circom structure
+  - git clone https://github.com/iden3/circom.git
+  - cd circom
+  - cargo build --release
+  # Assuming the binary is directly in the target/release after build
+  - cargo install --path circom
+  - cd ..
+
 # for frontend
 install_dependencies:
   stage: install
@@ -34,18 +46,6 @@ lint_code:
     changes:
       - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
 
-# Tests will be added later on in the development process
-# run_tests:
-#   stage: test
-#   image: node:latest
-#   script:
-#     - npm run test
-#   dependencies:
-#     - install_dependencies
-#   only:
-#     changes:
-#       - src/frontend/**/*
-
 build_project:
   stage: build
   image: node:latest
@@ -58,3 +58,57 @@ build_project:
   only:
     changes:
       - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
+
+test_verify_sig:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_sig
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_sig/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
+
+test_verify_merkle:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_merkle
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_merkle/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
+
+test_verify_single_tx:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_single_tx
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_single_tx/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
