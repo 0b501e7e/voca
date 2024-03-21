@@ -6,6 +6,13 @@ stages:
 # defining path to the directory so jobs can find package.json
 variables:
   FRONTEND_DIR: src/frontend/vocca
+
+# use cache instead of artifacts for node_modules to save space and share it across the jobs
+cache:
+  key: ${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_IID}
+  paths:
+    - src/frontend/vocca/node_modules/
+
 # change to directory
 before_script:
   - cd $FRONTEND_DIR
@@ -15,17 +22,12 @@ install_dependencies:
   image: node:latest
   script:
     - npm install # npm ci alternative, as it was failing
-  artifacts:
-    paths:
-      - src/frontend/vocca/node_modules/
 
 lint_code:
   stage: lint
   image: node:latest
   script:
     - npm run lint
-  dependencies:
-    - install_dependencies
 
 # Tests will be added later on in the development process
 # run_tests:
@@ -44,5 +46,3 @@ build_project:
   artifacts:
     paths:
       - src/frontend/vocca/.next/
-  dependencies:
-    - install_dependencies
