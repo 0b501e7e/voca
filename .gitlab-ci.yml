@@ -5,7 +5,7 @@ stages:
 
 # defining path to the directory so jobs can find package.json
 variables:
-  PROJECT_DIR: 2src/frontend/vocca
+  PROJECT_DIR: src/frontend/vocca
 # change to directory
 before_script:
   - cd $PROJECT_DIR
