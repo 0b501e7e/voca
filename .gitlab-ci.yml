@@ -20,7 +20,7 @@ lint_code:
   dependencies:
     - install_dependencies
 
-# Tests will be added later on in the development process 
+# Tests will be added later on in the development process
 # run_tests:
 #   stage: test
 #   image: node:latest
