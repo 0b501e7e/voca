@@ -5,10 +5,10 @@ stages:
 
 # defining path to the directory so jobs can find package.json
 variables:
-  PROJECT_DIR: src/frontend/vocca
+  FRONTEND_DIR: src/frontend/vocca
 # change to directory
 before_script:
-  - cd $PROJECT_DIR
+  - cd $FRONTEND_DIR
 
 install_dependencies:
   stage: install
@@ -17,7 +17,7 @@ install_dependencies:
     - npm install # npm ci alternative, as it was failing
   artifacts:
     paths:
-      - node_modules/
+      - src/frontend/vocca/node_modules/
 
 lint_code:
   stage: lint
@@ -43,6 +43,6 @@ build_project:
     - npm run build
   artifacts:
     paths:
-      - .next/
+      - src/frontend/vocca/.next/
   dependencies:
     - install_dependencies
