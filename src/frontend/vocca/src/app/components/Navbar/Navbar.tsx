@@ -2,14 +2,13 @@ import Link from "next/link";
 import React from "react";
 import Image from "next/image"; // Import the Image component
 import styles from "./Navbar.module.css";
-import logo from "../../../../public/logo-removebg.png";
 
 const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.navLogo}>
         <span>VOCCA</span>
-        <Image src={logo} alt="Logo" width={60} height={60} />
+        <Image src="/logo-removebg.png"alt="Logo" width={60} height={60} />
       </div>
 
       <ul className={styles.navLinks}>
