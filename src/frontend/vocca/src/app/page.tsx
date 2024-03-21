@@ -14,7 +14,7 @@ const HomePage = () => {
         <div className={styles.infoDiv}>
           <h1 className={styles.infoTitle}>What is VOCCA ?</h1>
           <p className={styles.infoParagraph}>
-            Welcome to our project, where we're exploring off-chain
+            Welcome to our project, where we'&apos;re exploring off-chain
             transactions. Our approach harnesses the power of zk rollups to
             bring you faster, more efficient, and secure transactions
           </p>
@@ -51,7 +51,7 @@ const HomePage = () => {
               Dive into transactions with VOCCA, simplfying the process for
               ERC20/ether transfers, making it accessible with just a few
               clicks. Join us on our journey and experience our transaction
-              processing technology. Click "Connect Your Wallet" and start with
+              processing technology. Click "&quot;Connect Your Wallet"&quot; and start with
               VOCCA today.
             </p>
             <button className={styles.infoButton}>Connect Your Wallet</button>

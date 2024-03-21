@@ -23,7 +23,7 @@ const TransactionsPage = () => {
           <p className={styles.infoParagraph}>
             This table provides a detailed view of all transactions processed
             through our zk-Rollup mechanism. Here, you can track each
-            transaction's batch ID, timestamp, zk-SNARK hash, current status,
+            transaction'&apos;s batch ID, timestamp, zk-SNARK hash, current status,
             and finality status. The information is updated in real-time to
             reflect the most current state of the blockchain.
           </p>
