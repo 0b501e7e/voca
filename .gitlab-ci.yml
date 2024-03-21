@@ -14,19 +14,20 @@ cache:
     - src/frontend/vocca/node_modules/
 
 # change to directory
-before_script:
-  - cd $FRONTEND_DIR
+#before_script:
 
 install_dependencies:
   stage: install
   image: node:latest
   script:
+    - cd $FRONTEND_DIR
     - npm install # npm ci alternative, as it was failing
 
 lint_code:
   stage: lint
   image: node:latest
   script:
+    - cd $FRONTEND_DIR
     - npm run lint
 
 # Tests will be added later on in the development process
@@ -42,6 +43,7 @@ build_project:
   stage: build
   image: node:latest
   script:
+    - cd $FRONTEND_DIR
     - npm run build
   artifacts:
     paths:
