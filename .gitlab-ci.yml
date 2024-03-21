@@ -3,6 +3,13 @@ stages:
   - lint
   - build
 
+# defining path to the directory so jobs can find package.sosn
+variables:
+  PROJECT_DIR: 2024-ca400-warnocs2-smithz2/src/frontend/vocca
+# change to directory
+before_script:
+  - cd $PROJECT_DIR
+
 install_dependencies:
   stage: install
   image: node:latest
