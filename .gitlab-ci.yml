@@ -7,7 +7,7 @@ install_dependencies:
   stage: install
   image: node:latest
   script:
-    - npm ci
+    - npm install # npm ci alternative, as it was failing
   artifacts:
     paths:
       - node_modules/
