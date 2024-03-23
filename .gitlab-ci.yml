@@ -130,3 +130,21 @@ test_verify_multiple_tx:
       - master
       - development
       - merge_requests
+
+test_verify_withdrawal_sig:
+  stage: test
+  script:
+    - circom --version || echo "Circom not found"
+    - npm install -g snarkjs
+    - cd src/circuits
+    - npm install
+    - cd verify_withdrawal_sig
+    - chmod +x test.sh
+    - ./test.sh
+  only:
+    changes:
+      - src/circuits/verify_withdrawal_sig/**/*
+    refs:
+      - master
+      - development
+      - merge_requests
