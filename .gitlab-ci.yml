@@ -1,8 +1,17 @@
 stages:
+  - install
+  - lint
+  - build
   - test
 
 variables:
+  FRONTEND_DIR: src/frontend/vocca
   CARGO_HOME: "$CI_PROJECT_DIR/cargo"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_IID}
+  paths:
+    - src/frontend/vocca/node_modules/
 
 before_script:
   - export PATH="$CARGO_HOME/bin:$PATH"
@@ -15,6 +24,40 @@ before_script:
   # Assuming the binary is directly in the target/release after build
   - cargo install --path circom
   - cd ..
+
+# for frontend
+install_dependencies:
+  stage: install
+  image: node:latest
+  script:
+    - cd $FRONTEND_DIR
+    - npm install
+  only:
+    changes:
+      - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
+
+lint_code:
+  stage: lint
+  image: node:latest
+  script:
+    - cd $FRONTEND_DIR
+    - npm run lint
+  only:
+    changes:
+      - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
+
+build_project:
+  stage: build
+  image: node:latest
+  script:
+    - cd $FRONTEND_DIR
+    - npm run build
+  artifacts:
+    paths:
+      - src/frontend/vocca/.next/
+  only:
+    changes:
+      - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
 
 test_verify_sig:
   stage: test
