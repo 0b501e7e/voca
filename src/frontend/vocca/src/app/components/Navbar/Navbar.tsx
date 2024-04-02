@@ -34,7 +34,7 @@ const Navbar = () => {
           </div>
         </li>
       </ul>
-      <button className={styles.buttonRight}>Connect Wallet</button>
+      <w3m-button />
     </nav>
   );
 };
