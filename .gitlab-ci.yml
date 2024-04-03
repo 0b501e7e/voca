@@ -7,6 +7,7 @@ stages:
 variables:
   FRONTEND_DIR: src/frontend/vocca
   CARGO_HOME: "$CI_PROJECT_DIR/cargo"
+  PROJECT_ID: "d3fa7677b00d83921f1b0a317cbba82a"
 
 cache:
   key: ${CI_COMMIT_REF_SLUG}-${CI_PIPELINE_IID}
