@@ -1,0 +1,17 @@
+{
+  "name": "operator-node",
+  "version": "1.0.0",
+  "description": "The operator node software manages transaction batching, proof generation, and submission to the blockchain. It acts as the backbone of the rollup, ensuring transactions are processed efficiently and securely.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ethers": "^6.11.1",
+    "express": "^4.19.2"
+  }
+}
