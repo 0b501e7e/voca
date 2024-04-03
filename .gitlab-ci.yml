@@ -14,6 +14,7 @@ cache:
     - src/frontend/vocca/node_modules/
 
 before_script:
+  - echo "NEXT_PUBLIC_PROJECT_ID=$PROJECT_ID" >> .env.local # for frontend wallet
   - export PATH="$CARGO_HOME/bin:$PATH"
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   - source "$CARGO_HOME/env"
