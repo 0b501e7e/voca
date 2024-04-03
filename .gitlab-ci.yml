@@ -32,6 +32,7 @@ install_dependencies:
   script:
     - cd $FRONTEND_DIR
     - npm install
+    - npm install sharp
   only:
     changes:
       - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory

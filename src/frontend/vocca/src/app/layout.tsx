@@ -14,17 +14,10 @@ export const metadata: Metadata = {
   description: "Zak Smith & Senan Warnock",
 };
 
-// Assuming a simple initialState structure, this will evolve when necessary
-const initialState = {
-  isConnected: false,
-  account: null,
-  provider: null,
-  chainId: null,
-};
 
 export default function RootLayout({ children }: { children: React.ReactNode; }) {
   return (
-    <Web3ModalProvider initialState={initialState}>
+    <Web3ModalProvider>
       <html lang="en">
         <body>
           <Navbar />
