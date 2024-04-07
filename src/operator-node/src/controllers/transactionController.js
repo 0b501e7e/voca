@@ -2,8 +2,10 @@
 const { validationResult } = require('express-validator');
 const { eddsa, poseidon } = require('circomlibjs');
 const Transaction = require('../models/Transaction');
-const stateManager = require('../services/stateManager'); // Adjust the path as necessary
-let transactionPool = [];
+const stateManager = require('../services/stateTree'); 
+const TransactionPool = require('../services/transactionPool');
+
+const txPool = new TransactionPool();
 
 exports.submitTransaction = async (req, res) => {
     const errors = validationResult(req);
@@ -18,11 +20,8 @@ exports.submitTransaction = async (req, res) => {
         validateNonce(from, nonce);
         validateBalance(from, amount);
         await validateSignature(req.body, signature);
-
-        // Execute the transaction and add to the pool if valid
-        executeTransaction(from, to, amount);
         const newTransaction = new Transaction(from, to, from_index, nonce, amount, token_type);
-        transactionPool.push(newTransaction);
+        txPool.addTransaction(newTransaction);
 
         return res.status(202).json({ message: 'Transaction successfully processed', transaction: newTransaction });
     } catch (error) {
@@ -67,22 +66,4 @@ function validateBalance(senderPubKey, amount) {
     if (!senderAccount || senderAccount.balance < amount) {
         throw new Error('Insufficient balance');
     }
-}
-
-function executeTransaction(senderPubKey, receiverPubKey, amount) {
-    const senderAccount = stateManager.getAccount(senderPubKey);
-    const receiverAccount = stateManager.getAccount(receiverPubKey) || stateManager.addAccount(receiverPubKey, 0, 0, senderAccount.token_type);
-
-    if (senderAccount.balance < amount) {
-        throw new Error('Insufficient balance for transaction execution');
-    }
-
-    // Process the transaction
-    senderAccount.balance -= amount;
-    receiverAccount.balance += amount;
-    senderAccount.nonce += 1;
-
-    // Persist the account changes
-    stateManager.updateAccount(senderPubKey, senderAccount);
-    stateManager.updateAccount(receiverPubKey, receiverAccount);
 }

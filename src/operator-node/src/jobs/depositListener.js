@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const stateManager = require('../services/stateManager');
+const stateManager = require('../services/stateTree');
 
 const depositListener = (contractAddress, abi, provider) => {
     const contract = new ethers.Contract(contractAddress, abi, provider);

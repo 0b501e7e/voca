@@ -1,5 +1,5 @@
 const { submitTransaction } = require('../src/controllers/transactionController');
-const stateManager = require('../src/services/stateManager');
+const stateManager = require('../src/services/stateTree');
 const { eddsa, poseidon } = require('circomlibjs');
 
 jest.mock('../src/services/stateManager');
