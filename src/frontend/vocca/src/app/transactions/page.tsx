@@ -34,23 +34,21 @@ const TransactionsPage = () => {
         <table className={styles.transactionsTable}>
           <thead>
             <tr>
+              <th>To</th>
+              <th>From</th>
+              <th>Token Type</th>
+              <th>Amount</th>
               <th>#</th>
-              <th>Batch ID</th>
-              <th>Timestamp</th>
-              <th>Zk-Hash</th>
-              <th>Status</th>
-              <th>Finality Status</th>
             </tr>
           </thead>
           <tbody>
             {transactions.map((transaction, index) => (
               <tr key={transaction.id}>
-                <td>{index + 1}</td>
                 <td>{transaction.batchId}</td>
                 <td>{new Date(transaction.timestamp).toLocaleString()}</td>
                 <td>{transaction.zkHash}</td>
                 <td>{transaction.status}</td>
-                <td>{transaction.finalityStatus}</td>
+                <td>{index + 1}</td>
               </tr>
             ))}
           </tbody>
