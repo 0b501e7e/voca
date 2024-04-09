@@ -1,51 +1,21 @@
 class TransactionPool {
-    constructor(batchSize = 100) {
+    constructor() {
         this.transactions = [];
-        this.batchSize = batchSize;
-        this.listeners = [];
     }
 
     addTransaction(transaction) {
-        if (!this.isTransactionPresent(transaction)) {
-            this.transactions.push(transaction);
-            this.checkAndProcessBatch();
-        }
+        this.transactions.push(transaction);
     }
 
-    isTransactionPresent(transaction) {
-        return this.transactions.some(tx => tx.id === transaction.id);
+    getNextBatch(batchSize) {
+        return this.transactions.slice(0, batchSize);
     }
 
-    checkAndProcessBatch() {
-        if (this.transactions.length >= this.batchSize) {
-            this.processBatch();
-        }
+    confirmProcessedBatch(batch) {
+        this.transactions = this.transactions.filter(tx => !batch.includes(tx));
     }
 
-    processBatch() {
-        const batch = this.transactions.splice(0, this.batchSize);
-        this.notifyListeners(batch);
-    }
-
-    registerBatchListener(listener) {
-        this.listeners.push(listener);
-    }
-
-    notifyListeners(batch) {
-        this.listeners.forEach(listener => listener(batch));
-    }
-
-    removeTransaction(transactionId) {
-        this.transactions = this.transactions.filter(tx => tx.id !== transactionId);
-    }
-
-    clear() {
-        this.transactions = [];
-    }
-
-    getPoolSize() {
-        return this.transactions.length;
-    }
+    // Other methods like checking for transaction presence or clearing the pool can remain or be adjusted as needed.
 }
 
 module.exports = TransactionPool;
