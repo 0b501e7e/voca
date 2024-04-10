@@ -1,17 +1,32 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import React from "react";
-import Image from "next/image"; // Import the Image component
+import Image from "next/image";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
+  const [showNav, setShowNav] = useState(false);
+
+  useEffect(() => {
+    console.log("showNav state is now:", showNav);
+  }, [showNav]);
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.navLogo}>
         <span>VOCA</span>
-        <Image src="/logo-removebg.png"alt="Logo" width={60} height={60} />
+        <Image src="/logo-removebg.png" alt="Logo" width={60} height={60} />
       </div>
 
-      <ul className={styles.navLinks}>
+      <div
+        className={styles.navToggle}
+        onClick={() => setShowNav((prevShowNav) => !prevShowNav)}
+      >
+        ☰
+      </div>
+
+      <ul className={`${styles.navLinks} ${showNav ? styles.showNav : ""}`}>
         {/* Navigation Items */}
         <li className={styles.navItem}>
           <Link href="/" className={styles.navLink}>
@@ -26,15 +41,15 @@ const Navbar = () => {
         {/* dropdown */}
         <li className={`${styles.navItem} ${styles.dropdown}`}>
           <div className={styles.navLinkWithDropdown}>
-            <a className={styles.navLink}>Build</a> {/* Dropdown Trigger */}
+            <a className={styles.navLink}>Team</a> {/* Dropdown Trigger */}
             <span className={styles.dropdownArrow}>▼</span>
           </div>
           <div className={styles.dropdownContent}>
             <Link href="/documentation">Documentation</Link>{" "}
           </div>
         </li>
+        <w3m-button />
       </ul>
-      <w3m-button />
     </nav>
   );
 };

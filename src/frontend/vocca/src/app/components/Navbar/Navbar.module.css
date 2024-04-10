@@ -1,12 +1,16 @@
 .navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure the navbar is above other content */
   background-color: #121212;
   height: 60px;
   display: flex;
-  padding: 50px 0;
+  padding: 50px 20px;
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 
 .navLogo {
   display: flex;
@@ -102,5 +106,62 @@
   transform: rotate(180deg); /* Flip arrow when dropdown is active */
 }
 
+.navToggle {
+  display: none; /* Hide toggle button by default */
+}
+
+/* Responsive design for smaller devices */
+
 @media (max-width: 600px) {
+  .navbar {
+    margin-bottom: 100px;
+  }
+
+  .navLinks {
+    display: none; /* Hide the navigation links */
+    flex-direction: column; /* Stack them vertically when shown */
+    align-items: center; /* Center align nav items */
+    width: 100%;
+    position: absolute;
+    top: 100px;
+    left: 0;
+    background-color: #121212; 
+    padding-top: 20px; 
+    padding-bottom: 20px; 
+    overflow: hidden;
+  }
+
+  .navItem {
+    margin: 10px 0; /* Adjust spacing for vertical layout */
+  }
+
+  .navLink {
+    color: white; /* Text color */
+    text-decoration: none; 
+    font-size: 1.2rem;
+    transition: color 0.3s ease-in-out; /* Smooth transition for color change */
+  }
+
+  .navLink:hover,
+  .navLinkActive {
+    color: #fcd535;
+    text-decoration: none; 
+  }
+
+  .dropdownContent {
+    position: static; /* Override absolute positioning */
+  }
+
+  .navToggle {
+    display: block; /* Show toggle button */
+    cursor: pointer;
+  }
+
+  .showNav {
+    display: flex !important; /* Ensure navigation links are shown */
+  }
+
+  .showNav .navLinks {
+    display: flex;
+  }
 }
