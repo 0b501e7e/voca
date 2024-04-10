@@ -59,3 +59,9 @@
     0.2
   ); /* Adjusts only the background opacity */
 }
+
+.errorMessage {
+  color: red;
+  margin: 20px 0;
+  text-align: center;
+}
