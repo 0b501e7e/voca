@@ -1,6 +1,5 @@
 stages:
-  - install
-  - lint
+  - install_and_lint
   - build
   - test
 
@@ -31,26 +30,18 @@ before_script:
   - cd ..
 
 # for frontend
-install_dependencies:
-  stage: install
+# merging the install and lint stages together
+install_and_lint:
+  stage: install_and_lint
   image: node:latest
   script:
     - cd $FRONTEND_DIR
     - npm install
     - npm install sharp
-  only:
-    changes:
-      - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
-
-lint_code:
-  stage: lint
-  image: node:latest
-  script:
-    - cd $FRONTEND_DIR
     - npm run lint
   only:
     changes:
-      - src/frontend/**/*  # Run this job only if there are changes in the src/frontend directory
+      - src/frontend/**/*
 
 build_project:
   stage: build
