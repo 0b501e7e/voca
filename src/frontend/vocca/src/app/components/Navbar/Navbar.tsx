@@ -20,10 +20,12 @@ const Navbar = () => {
       </div>
 
       <div
-        className={styles.navToggle}
+        className={`${styles.navToggle} ${showNav ? styles.change : ""}`}
         onClick={() => setShowNav((prevShowNav) => !prevShowNav)}
       >
-        ☰
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
+        <div className={styles.bar}></div>
       </div>
 
       <ul className={`${styles.navLinks} ${showNav ? styles.showNav : ""}`}>

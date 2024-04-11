@@ -15,6 +15,7 @@ cache:
 
 before_script:
   #  For Frontend
+  - cd src/frontend/vocca
   - touch .env.local # Ensure the file exists before building
   - echo "NEXT_PUBLIC_PROJECT_ID=$PROJECT_ID" >> .env.local # Append or create project id
   #End Frontend

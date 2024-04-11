@@ -132,14 +132,14 @@
   }
 
   .navItem {
-    margin: 10px 0; /* Adjust spacing for vertical layout */
+    margin: 10px 0;
   }
 
   .navLink {
     color: white; /* Text color */
     text-decoration: none; 
     font-size: 1.2rem;
-    transition: color 0.3s ease-in-out; /* Smooth transition for color change */
+    transition: color 0.3s ease-in-out;
   }
 
   .navLink:hover,
@@ -153,8 +153,32 @@
   }
 
   .navToggle {
-    display: block; /* Show toggle button */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px; /* Width of the hamburger */
+    height: 25px; /* Total height of the hamburger */
     cursor: pointer;
+    margin: 0;
+  }
+  
+  .bar {
+    height: 3px;
+    width: 100%;
+    background-color: #fff;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .change .bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  
+  .change .bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .change .bar:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
   }
 
   .showNav {
@@ -163,5 +187,6 @@
 
   .showNav .navLinks {
     display: flex;
+    transition: all 0.3s ease-in-out;
   }
 }

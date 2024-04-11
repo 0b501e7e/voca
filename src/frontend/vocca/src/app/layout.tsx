@@ -4,7 +4,6 @@ import React from "react";
 import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";
 import ParticlesBackground from "./components/ParticlesBackground"; // Import the ParticlesBackground component
-import { metadata } from '@/config/siteMetadata';
 
 import { config } from "@/config";
 import Web3ModalProvider from "@/context";
