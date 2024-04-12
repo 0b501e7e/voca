@@ -21,7 +21,7 @@ const Navbar = () => {
 
       <div
         className={`${styles.navToggle} ${showNav ? styles.change : ""}`}
-        onClick={() => setShowNav((prevShowNav) => !prevShowNav)}
+        onClick={() => setShowNav(!showNav)} // Correctly toggles the showNav state
       >
         <div className={styles.bar}></div>
         <div className={styles.bar}></div>
@@ -40,18 +40,20 @@ const Navbar = () => {
             Transactions
           </Link>
         </li>
-        {/* dropdown */}
+        {/* Hover dropdown logic */}
         <li className={`${styles.navItem} ${styles.dropdown}`}>
           <div className={styles.navLinkWithDropdown}>
-            <a className={styles.navLink}>Team</a> {/* Dropdown Trigger */}
+            <span className={styles.navLink}>Project Info</span>
             <span className={styles.dropdownArrow}>▼</span>
           </div>
           <div className={styles.dropdownContent}>
-            <Link href="/documentation">Documentation</Link>{" "}
+            <Link href="/developers">Developers</Link>
+            <Link href="/documentation">Documentation</Link>
+            <Link href="/faqs">FAQs</Link>
           </div>
         </li>
-        <w3m-button />
       </ul>
+      <w3m-button />
     </nav>
   );
 };
