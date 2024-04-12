@@ -52,8 +52,8 @@ const Navbar = () => {
             <Link href="/faqs">FAQs</Link>
           </div>
         </li>
-      </ul>
       <w3m-button />
+      </ul>
     </nav>
   );
 };

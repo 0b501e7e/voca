@@ -5,30 +5,26 @@
     min-height: 100vh; /* Ensure full vertical height */
   }
   
-  .pageHeader, .developerSection {
+  .pageHeader {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
+    margin: 50px 0px;
+    padding-bottom: 30px;
   }
   
-  .pageTitle, .developerName {
+  .pageTitle {
     font-size: 2.4rem;
     color: #fcd535; /* Highlight color */
   }
   
-  .infoParagraph, .developerBio {
+  .infoParagraph {
     font-size: 1.2rem;
     margin-top: 10px;
     color: white;
     max-width: 800px; /* Ensure text is not too wide on larger screens */
-  }
-  
-  .developerRole {
-    font-size: 1.4rem;
-    margin: 5px 0 15px; /* Space out the role from the name and bio */
-    color: #fcd535; /* Matching highlight color */
   }
   
   .developerLinks {
@@ -49,33 +45,75 @@
   .developerSection {
     display: flex;
     align-items: center;
+    justify-content: space-around;
     margin-bottom: 50px;
+    padding: 20px;
   }
   
   .developerImage {
-    width: 150px; 
-    height: 150px; 
-    border-radius: 75px; 
-    margin-right: 20px;
+    border-radius: 50%; /* Circular image */
+    width: 150px; /* Fixed size for simplicity */
+    height: 150px; /* Maintain aspect ratio */
+    object-fit: cover; /* Ensures the image covers the area without being stretched */
   }
-  
+
+  .developerInfo {
+    display: flex;
+    flex-direction: column;
+    max-width: 60%; /* Limit text width */
+}
+
+.developerName {
+    font-size: 2rem;
+    color: #fcd535;
+}
+
+.developerRole {
+    font-size: 1.6rem;
+    color: #ffffff;
+}
+
+.developerBio {
+    font-size: 1.2rem;
+    color: #ffffff;
+    margin-top: 10px; /* Space between role and bio */
+}
+
+.developerLinks a {
+    color: #fcd535;
+    text-decoration: none;
+    margin-top: 5px;
+}
+
   /* Ensure text wraps next to the image */
   .developerSection > div {
     flex: 1;
   }
   
-  /* Adjustments for smaller screens */
-  @media (max-width: 600px) {
-    .pageContainer {
-      padding: 10px;
-    }
-  
-    .infoParagraph, .developerBio {
-      font-size: 1rem; /* Slightly smaller text on smaller screens */
-    }
-  
-    .developerSection {
-      margin-bottom: 20px; /* Space between developer sections on smaller screens */
-    }
+ /* Adjustments for smaller screens */
+@media (max-width: 600px) {
+  .pageContainer {
+    padding: 10px;
   }
+
+  .infoParagraph, .developerBio {
+    font-size: 1rem; /* Slightly smaller text on smaller screens */
+  }
+
+  .developerSection {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px; 
+  }
+
+  .developerInfo {
+    max-width: 100%; 
+    text-align: center; /* Centers the text below the image */
+  }
+
+  .developerLinks a {
+    display: block; 
+  }
+}
+
   
