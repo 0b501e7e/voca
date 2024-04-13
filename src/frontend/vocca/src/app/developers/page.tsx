@@ -29,7 +29,7 @@ const DevelopersPage = () => {
             <p className={styles.developerBio}>
               Specializing in the frontend development, utilized Next.js 14,
               wagmi, and ethers for creating a seamless interface and
-              communication layer with the blockchain backend.
+              communication layer with the blockchain backend, whilst working in tandem with on the operator node.
             </p>
             <span>zak.smith2@mail.dcu.ie</span>
           </div>
@@ -38,7 +38,7 @@ const DevelopersPage = () => {
         {/* Senan Warnock Section */}
         <section className={styles.developerSection}>
           <Image
-            src="/zakImage.png"
+            src="/senanImage.png"
             alt="Senan Warnock"
             width={150}
             height={150}
@@ -50,7 +50,7 @@ const DevelopersPage = () => {
             <p className={styles.developerBio}>
               developed the backend systems, specializing in zk-rollups and
               smart contracts to enhance transaction efficiency and security.
-              wrote circuits for the zk-rollup process has been crucial in
+              wrote the circuits for the zk-rollup, which has been crucial in
               achieving the project's goals.
             </p>
             <span>senan.warnock2@mail.dcu.ie</span>

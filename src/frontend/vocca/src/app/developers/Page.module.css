@@ -55,6 +55,7 @@
     width: 150px; /* Fixed size for simplicity */
     height: 150px; /* Maintain aspect ratio */
     object-fit: cover; /* Ensures the image covers the area without being stretched */
+    background-color: #ffffff;
   }
 
   .developerInfo {
