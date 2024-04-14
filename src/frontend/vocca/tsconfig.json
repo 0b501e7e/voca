@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "lib": [
       "dom",
       "dom.iterable",
@@ -24,14 +25,16 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ]
+      ],
+      "@/config/*": [
+        "src/config/*"
+      ] // path alias for "@/config/*" metadata
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts,",
     ".next/types/**/*.ts"
   ],
   "exclude": [

@@ -51,10 +51,10 @@ const HomePage = () => {
               Dive into transactions with VOCA, simplfying the process for
               ERC20/ether transfers, making it accessible with just a few
               clicks. Join us on our journey and experience our transaction
-              processing technology. Click "&quot;Connect Your Wallet"&quot; and start with
+              processing technology. Click "&quot;Connect Wallet"&quot; and start with
               VOCA today.
             </p>
-            <button className={styles.infoButton}>Connect Your Wallet</button>
+            <w3m-button />
           </div>
           <div className={styles.imageDiv}>
             <Image src={img3} alt="Logo" width={350} height={350} />{" "}

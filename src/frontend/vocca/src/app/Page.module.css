@@ -1,6 +1,6 @@
 .pageContainer {
   background-color: #121212;
-  padding: 0 20px;
+  padding: 0;
   width: 100%;
 }
 
@@ -14,11 +14,12 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 20px 0px;
 }
 
 .infoDiv {
   flex: 1;
-  margin: 100px 0px;
+  margin: 100px 20px;
 }
 
 .imageDiv {
@@ -30,7 +31,7 @@
 }
 
 .infoTitle {
-  font-size: 2rem;
+  font-size: 2.4rem;
   color: #fcd535;
 }
 
@@ -55,10 +56,25 @@
   background-color: #fcd535;
 }
 
+.infoSection, .pageHeader {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px; /* Adjust gap between items as needed */
+  align-items: center; /* Align items vertically in the center */
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .pageHeader,
-  .infoSection {
+  .infoSection, .pageHeader {
+    display: flex;
     flex-direction: column;
+  }
+  
+  .infoSection .imageDiv {
+    order: 2; /* Place the image after the text */
+  }
+
+  .infoSection .infoDiv {
+    order: 1; /* Ensure the text appears first */
   }
 }

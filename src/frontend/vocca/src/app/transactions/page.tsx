@@ -1,19 +1,41 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import styles from "./Page.module.css";
-import Image from "next/image"; // Import the Image component
-import { info } from "console";
+
+// TypeScript interface for the transaction data
+interface Transaction {
+  id: number;
+  batchId: string;
+  timestamp: string;
+  zkHash: string;
+  status: string;
+  finalityStatus: string;
+}
 
 const TransactionsPage = () => {
-  const transactions = [
-    {
-      id: 1,
-      batchId: "Batch-001",
-      timestamp: "2023-03-01T12:00:00Z",
-      zkHash: "0x123...",
-      status: "Processed",
-      finalityStatus: "Confirmed",
-    },
-  ];
+  // Use the Transaction interface to type the state
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  // State for storing potential error messages
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch transactions");
+        }
+        const data: Transaction[] = await response.json();
+        setTransactions(data);
+      } catch (error: any) { // Catching error as any to access its message
+        console.error("Error fetching transactions:", error);
+        setError(error.message || "An error occurred while fetching transactions.");
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   return (
     <div className={styles.pageContainer}>
@@ -23,29 +45,31 @@ const TransactionsPage = () => {
           <p className={styles.infoParagraph}>
             This table provides a detailed view of all transactions processed
             through our zk-Rollup mechanism. Here, you can track each
-            transaction'&apos;s batch ID, timestamp, zk-SNARK hash, current status,
+            transaction's batch ID, timestamp, zk-SNARK hash, current status,
             and finality status. The information is updated in real-time to
             reflect the most current state of the blockchain.
           </p>
         </div>
       </header>
       <main>
-        {/* Transactions list/table */}
+        {/* Display error message if fetching transactions fails */}
+        {error && <div className={styles.errorMessage}>{error}</div>}
+        
         <table className={styles.transactionsTable}>
           <thead>
             <tr>
-              <th>#</th>
+              <th>ID</th>
               <th>Batch ID</th>
               <th>Timestamp</th>
-              <th>Zk-Hash</th>
+              <th>ZK Hash</th>
               <th>Status</th>
               <th>Finality Status</th>
             </tr>
           </thead>
           <tbody>
-            {transactions.map((transaction, index) => (
+            {transactions.map((transaction) => (
               <tr key={transaction.id}>
-                <td>{index + 1}</td>
+                <td>{transaction.id}</td>
                 <td>{transaction.batchId}</td>
                 <td>{new Date(transaction.timestamp).toLocaleString()}</td>
                 <td>{transaction.zkHash}</td>
