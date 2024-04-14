@@ -14,11 +14,6 @@ cache:
     - src/frontend/vocca/node_modules/
 
 before_script:
-  #  For Frontend
-  - cd $FRONTEND_DIR # cd to the frontend directory
-  - touch .env.local # Ensure the .env file exists before building
-  - echo "NEXT_PUBLIC_PROJECT_ID=$PROJECT_ID" >> .env.local # Append or create project id for connect wallet
-  #End Frontend
   - export PATH="$CARGO_HOME/bin:$PATH"
   - curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
   - source "$CARGO_HOME/env"
@@ -49,6 +44,8 @@ build_project:
   image: node:latest
   script:
     - cd $FRONTEND_DIR
+    - touch .env.local # Ensure the .env file exists before building
+    - echo "NEXT_PUBLIC_PROJECT_ID=$PROJECT_ID" >> .env.local # Append or create project id for connect wallet
     - npm run build
   artifacts:
     paths:
