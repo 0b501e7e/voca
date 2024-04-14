@@ -1,27 +1,12 @@
 const Tree = require("./tree.js");
 const Transaction = require("../models/Transaction.js");
 
-module.exports = class AccountTree extends Tree {
-    constructor(_accounts = []) { // Default to an empty array if no accounts are provided
-        super(_accounts.map(account => account.hashAccount()));
-        this.accounts = _accounts;
-    }
-
-    // Method to add a new account
-    addAccount(newAccount) {
-      
-        // Add to accounts and leafNodes
-        this.accounts.push(newAccount);
-        this.leafNodes.push(newAccount.hashAccount());
-
-        // Update the tree
-        this.updateTree();
-    }
-
-    // Helper method to rebuild the tree and update the root
-    updateTree() {
-        this.innerNodes = this.treeFromLeafNodes();
-        this.root = this.innerNodes[0][0];
+module.exports = class AccountTree extends Tree{
+    constructor(
+        _accounts
+    ){
+        super(_accounts.map(x => x.hashAccount()))
+        this.accounts = _accounts
     }
 
     processTxArray(txTree){
