@@ -2,12 +2,11 @@ require('dotenv').config();
 const express = require('express');
 const ethers = require('ethers');
 const transactionRoutes = require('./src/api/routes/transactionRoutes');
-const depositListener = require('./src/jobs/depositListener');
 // Import required components
 const AccountTree = require('./src/utils/accountTree');
 const TransactionPool = require('./src/services/transactionPool');
 const BatchProcessor = require('./src/services/batchProcessor');
-
+const DepositService = require('./src/services/depositService');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -15,8 +14,7 @@ const PORT = process.env.PORT || 3000;
 const accountTree = new AccountTree();
 const transactionPool = new TransactionPool();
 const batchProcessor = new BatchProcessor(accountTree, transactionPool, 100 /* or desired batch size */);
-const depositListener = new depositListener(process.env.CONTRACT_ADDRESS, abi, provider, accountTree);
-
+const depositService = new DepositService(process.env.CONTRACT_ADDRESS, process.env.CONTRACT_ABI, process.env.PROVIDER_URL, accountTree);
 
 // Setup application middleware and routes
 app.use(express.json());
