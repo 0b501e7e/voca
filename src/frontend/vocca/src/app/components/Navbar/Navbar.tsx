@@ -36,8 +36,8 @@ const Navbar = () => {
           </Link>
         </li>
         <li className={styles.navItem}>
-          <Link href="/transactions" className={styles.navLink}>
-            Transactions
+          <Link href="/dashboard" className={styles.navLink}>
+            Dashboard
           </Link>
         </li>
         {/* Hover dropdown logic */}
