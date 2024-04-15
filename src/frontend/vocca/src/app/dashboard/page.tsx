@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import styles from "./Page.module.css";
+import Image from "next/image"; // Import the Image component
 
 // TypeScript interface for the transaction data
 interface Transaction {
@@ -13,11 +14,10 @@ interface Transaction {
   finalityStatus: string;
 }
 
-const TransactionsPage = () => {
-  // Use the Transaction interface to type the state
+const DashboardPage = () => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  // State for storing potential error messages
   const [error, setError] = useState<string | null>(null);
+  const [depositAmount, setDepositAmount] = useState('');
 
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -28,7 +28,7 @@ const TransactionsPage = () => {
         }
         const data: Transaction[] = await response.json();
         setTransactions(data);
-      } catch (error: any) { // Catching error as any to access its message
+      } catch (error: any) {
         console.error("Error fetching transactions:", error);
         setError(error.message || "An error occurred while fetching transactions.");
       }
@@ -37,22 +37,36 @@ const TransactionsPage = () => {
     fetchTransactions();
   }, []);
 
+  const handleDeposit = async (e) => {
+    e.preventDefault();
+    console.log(`Depositing ${depositAmount}`);
+    setDepositAmount('');
+  };
+
   return (
     <div className={styles.pageContainer}>
       <header className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Transactions</h1>
+        <h1 className={styles.pageTitle}>Dashboard</h1>
         <div className={styles.transactionInfo}>
           <p className={styles.infoParagraph}>
-            This table provides a detailed view of all transactions processed
-            through our zk-Rollup mechanism. Here, you can track each
-            transaction's batch ID, timestamp, zk-SNARK hash, current status,
-            and finality status. The information is updated in real-time to
-            reflect the most current state of the blockchain.
+            Manage your transactions and deposits through our zk-Rollup mechanism. This dashboard provides a real-time view of blockchain operations.
           </p>
         </div>
       </header>
       <main>
-        {/* Display error message if fetching transactions fails */}
+        <div className={styles.depositSection}>
+          <div className={styles.depositContent}>
+            <h2 className={styles.depositTitle}>Make a Deposit</h2>
+            <div className={styles.depositDiv}>
+              <input type="text" placeholder="Amount to Deposit" className={styles.depositInput} onChange={(e) => setDepositAmount(e.target.value)} />
+              <button className={styles.depositButton} onClick={handleDeposit}>Deposit</button>
+            </div>
+          </div>
+          <div className={styles.imageDiv}>
+            <Image src="/deposit.png" alt="Deposit Illustration" width={350} height={350}/>
+          </div>
+        </div>
+
         {error && <div className={styles.errorMessage}>{error}</div>}
         
         <table className={styles.transactionsTable}>
@@ -84,4 +98,4 @@ const TransactionsPage = () => {
   );
 };
 
-export default TransactionsPage;
+export default DashboardPage;
