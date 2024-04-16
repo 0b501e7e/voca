@@ -1,25 +1,33 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import styles from "./Page.module.css";
 import Image from "next/image";
 import { eddsa } from "circomlibjs"; // Import the necessary cryptography functions
+import { useWallet } from "../../context";
 
 const DashboardPage = () => {
+  const { ethAddress } = useWallet(); // Access the Ethereum address from context
   const [privateKey, setPrivateKey] = useState("");
   const [publicKey, setPublicKey] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
   const [error, setError] = useState(null);
 
   function generateKeys() {
-    // Generate private key from a random index
-    const index = Date.now(); // Using current timestamp as a simple seed
-    const prvKey = Buffer.from(index.toString().padStart(64, "0"), "hex");
+    if (!ethAddress) {
+      setError("Please connect your Ethereum wallet first.");
+      return;
+    }
+    // Generate private key based on the Ethereum wallet address
+    const seed = ethAddress; // Use Ethereum address as seed
+    const prvKey = Buffer.from(seed.slice(2), "hex"); // Convert hex to Buffer
     setPrivateKey(prvKey.toString("hex"));
 
     // Generate public key using the private key
     const pubKey = eddsa.prv2pub(prvKey);
-    setPublicKey(pubKey.toString("hex")); // Convert public key to string and set it
+    // Assuming pubKey is an array [x, y], where x and y are BigInt
+    const pubKeyHex = pubKey.map((coord) => coord.toString(16)).join(""); // Convert each coordinate to hex and concatenate
+    setPublicKey(pubKeyHex);
   }
 
   const handleDeposit = async (e) => {
@@ -46,41 +54,17 @@ const DashboardPage = () => {
       <main>
         <div className={styles.walletSection}>
           <div className={styles.walletContent}>
-            <div>
-              <h2 className={styles.walletTitle}>Generate Your Wallet</h2>
-              <button className={styles.walletButton} onClick={generateKeys}>
-                Generate Wallet
-              </button>
-              <div className={styles.keyDisplay}>
-                <div className={styles.keyDisplay}>
-                  <div className={styles.keysContainer}>
-                    {privateKey || publicKey ? (
-                      <>
-                        <div>
-                          <span className={styles.key}>Private Key:</span>{" "}
-                          {privateKey && (
-                            <span className={styles.privateKeyText}>
-                              {privateKey}
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          <span className={styles.key}>Public Key:</span>{" "}
-                          {publicKey && (
-                            <span className={styles.publicKeyText}>
-                              {publicKey}
-                            </span>
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <span className={styles.placeholder}>
-                        Click above to generate both a private and public key
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
+            <h2 className={styles.walletTitle}>Generate Your Wallet</h2>
+            <button className={styles.walletButton} onClick={generateKeys}>
+              Generate Wallet
+            </button>
+            <div className={styles.keyDisplay}>
+              <p className={`${styles.privateKeyLabel}`} title="Private Key">
+                Private Key: <span className={styles.key}>{privateKey}</span>
+              </p>
+              <p className={`${styles.publicKeyLabel}`} title="Public Key">
+                Public Key: <span className={styles.key}>{publicKey}</span>
+              </p>
             </div>
           </div>
           <div className={styles.walletExplanation}>
@@ -105,6 +89,17 @@ const DashboardPage = () => {
               className={styles.depositInput}
               onChange={(e) => setDepositAmount(e.target.value)}
             />
+            <select
+              className={styles.tokenSelect}
+              onChange={(e) => setTokenType(e.target.value)}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                Select Token Type
+              </option>
+              <option value="1">Ethereum</option>
+              {/* Add other tokens as needed */}
+            </select>
             <button className={styles.depositButton} onClick={handleDeposit}>
               Deposit
             </button>

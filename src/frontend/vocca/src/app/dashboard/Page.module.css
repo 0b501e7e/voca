@@ -147,6 +147,16 @@
   color: white;
 }
 
+.tokenSelect {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px; 
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: #121212;
+  color: white;
+}
+
 .depositButton {
   width: 100%;
   padding: 10px 20px;
@@ -169,42 +179,26 @@
   align-items: center;
 }
 
-.keyDisplay {
-  margin-top: 20px;
-}
-
 .keyDisplay p {
   margin-bottom: 10px;
 }
 
-.keyDisplay strong {
-  color: #fcd535;
+.keyDisplay {
+  margin-top: 20px;
 }
 
 .key {
-  color: #0096ff;
+  color: white;
+  font-weight: normal;
+  word-wrap: break-word; /* Ensure long keys wrap to the next line */
 }
 
-.keysContainer {
-  max-height: 200px;
-  scrollbar-width: thin;
-  scrollbar-color: #fcd535 #121212;
-  overflow: scroll;
+.privateKeyLabel,
+.publicKeyLabel {
+  font-weight: bold;
+  color: #fcd535;
 }
 
-/* Style the scrollbar for WebKit browsers */
-.keysContainer::-webkit-scrollbar {
-  width: 10px;
-}
-
-.keysContainer::-webkit-scrollbar-thumb {
-  background-color: #fcd535;
-  border-radius: 5px;
-}
-
-.keysContainer::-webkit-scrollbar-track {
-  background-color: #121212;
-}
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
