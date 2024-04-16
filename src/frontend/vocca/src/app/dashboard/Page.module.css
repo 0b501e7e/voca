@@ -38,7 +38,6 @@
 .transactionsTable th {
   position: sticky;
   top: 0;
-  z-index: 1; /* Ensures the header is above other content when scrolling */
   background-color: rgba(3, 125, 214, 0.5);
 }
 
@@ -67,6 +66,60 @@
   text-align: center;
 }
 
+.walletSection {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* Align items at the start of the cross axis */
+  margin: 20px 0;
+}
+
+.walletContent,
+.depositContent {
+  flex: 1;
+  margin: 20px;
+  padding: 20px;
+  background-color: #232323;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: calc(50% - 40px); 
+  max-width: calc(50% - 40px);
+}
+
+.walletExplanation {
+  flex: 1;
+  margin: 20px; /* Add margin to separate the two sections */
+  padding: 20px; 
+  border-radius: 10px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  color: white;
+  font-size: 1.2rem;
+}
+
+.walletExplanationTitle {
+  color: #fcd535;
+  margin-bottom: 10px; /* Add space between title and text */
+}
+
+.walletTitle {
+  color: #fcd535;
+  margin-bottom: 20px;
+}
+
+.walletButton {
+  padding: 10px 20px;
+  margin-top: 10px;
+  background-color: #f0b90b;
+  color: #0b0e11;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.walletButton:hover {
+  background-color: #fcd535;
+}
+
 .depositSection {
   display: flex;
   justify-content: center;
@@ -74,29 +127,20 @@
   margin: 20px 0px;
 }
 
-.depositContent, .imageDiv {
+.imageDiv {
   flex: 1; /* Each child takes equal space */
-  margin: 10px; /* Optional: adds margin around the items */
+  margin: 10px;
 }
-
-.depositContent {
-  margin: 100px 20px;
-  padding: 20px;
-  background-color: #232323;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
 
 .depositTitle {
   color: #fcd535;
-  margin-bottom: 20px; /* Space between title and input */
+  margin-bottom: 20px; 
 }
 
 .depositInput {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px; /* Space between input and button */
+  margin-bottom: 10px; 
   border-radius: 5px;
   border: 1px solid #ccc;
   background-color: #121212;
@@ -125,13 +169,51 @@
   align-items: center;
 }
 
+.keyDisplay {
+  margin-top: 20px;
+}
+
+.keyDisplay p {
+  margin-bottom: 10px;
+}
+
+.keyDisplay strong {
+  color: #fcd535;
+}
+
+.key {
+  color: #0096ff;
+}
+
+.keysContainer {
+  max-height: 200px;
+  scrollbar-width: thin;
+  scrollbar-color: #fcd535 #121212;
+  overflow: scroll;
+}
+
+/* Style the scrollbar for WebKit browsers */
+.keysContainer::-webkit-scrollbar {
+  width: 10px;
+}
+
+.keysContainer::-webkit-scrollbar-thumb {
+  background-color: #fcd535;
+  border-radius: 5px;
+}
+
+.keysContainer::-webkit-scrollbar-track {
+  background-color: #121212;
+}
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .depositSection {
     flex-direction: column;
   }
 
-  .depositContent, .imageDiv {
+  .depositContent,
+  .imageDiv {
     width: 100%; /* Ensure they stack and take full width */
     margin: 10px 0;
   }

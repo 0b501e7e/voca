@@ -49,7 +49,6 @@ const Navbar = () => {
           <div className={styles.dropdownContent}>
             <Link href="/developers">Developers</Link>
             <Link href="/documentation">Documentation</Link>
-            <Link href="/faqs">FAQs</Link>
           </div>
         </li>
       <w3m-button />
