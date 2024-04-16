@@ -6,7 +6,6 @@ const treeHelper = require('../utils/treeHelper');
 const { poseidon } = require('circomlibjs');
 const Account = require('../models/Account');
 const { stringifyBigInts, unstringifyBigInts } = require('../utils/stringifybigint');
-const { zero } = require('big-integer');
 
 class DepositService {
     constructor(contractAddress, abi, providerUrl, accountTree) {
@@ -16,8 +15,8 @@ class DepositService {
         this.subtreeHashes = [];
         this.accountIdx = 2;
         this.batchIdx = 0;
-        this.accountTree = accountTree;
         this.BAL_DEPTH = 4;
+        this.accountTree = accountTree;
         this.zeroCache = this.initializeZeroCache();
         this.listenForDepositEvents();
     }
@@ -58,10 +57,24 @@ class DepositService {
 
         // need to figure out a way to account for subtree position for the proof
 
-        const accounts = this.pendingDeposits.splice(0, 4).map(({ pubKey, amount, tokenType }) => {
-            return new Account(this.accountIdx++, pubKey.x, pubKey.y, amount, 0, tokenType);
-        });
-        const subtree = new AccountTree(accounts);
+        // const accounts = this.pendingDeposits.splice(0, 4).map(({ pubKey, amount, tokenType }) => {
+        //     const acc = new Account(this.accountIdx++, pubKey[0], pubKey[1], amount, 0, tokenType);
+        //     accounts.push(acc);
+        //     return acc;
+        // });
+
+        const pendingDeposits = this.pendingDeposits.splice(0, 4);
+        const pendingDepositsAccounts = [];
+        const accounts = this.accountTree.accounts.slice(0, this.accountIdx + 1);
+        for (let i = 0; i < pendingDeposits.length; i++) {
+            const { pubKey, amount, tokenType } = pendingDeposits[i];
+            const acc = new Account(this.accountIdx++, pubKey[0], pubKey[1], amount, 0, tokenType);
+            accounts.push(acc);
+            pendingDepositsAccounts.push(acc);
+        }
+        // clear pending deposits slice
+        this.pendingDeposits = this.pendingDeposits.length == 4 ? [] : this.pendingDeposits.splice(4);
+        const subtree = new AccountTree(pendingDepositsAccounts);
         const subtreeRoot = subtree.root;
         this.subtreeHashes.push(subtreeRoot);
         // after we have the proof, we should check the batch index to determine how many subtrees we need to fill
