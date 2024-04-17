@@ -4,7 +4,7 @@ const { TxTree } = require("../utils/txTree");
 const { getCircuitInput } = require("../utils/circuitInput");
 const snarkjs = require("snarkjs");
 class BatchProcessor {
-    constructor(accountTree, transactionPool, batchSize = 100) {
+    constructor(accountTree, transactionPool, batchSize) {
         this.accountTree = accountTree;
         this.transactionPool = transactionPool;
         this.batchSize = batchSize;

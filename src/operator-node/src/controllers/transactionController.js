@@ -2,7 +2,7 @@
 const { validationResult } = require('express-validator');
 const { eddsa, poseidon } = require('circomlibjs');
 const Transaction = require('../models/Transaction');
-const stateManager = require('../services/stateTree'); 
+const accountTree = require('../utils/accountTree'); 
 const TransactionPool = require('../services/transactionPool');
 
 const txPool = new TransactionPool();
@@ -55,14 +55,14 @@ async function validateSignature(transaction, signature) {
 }
 
 function validateNonce(senderPubKey, transactionNonce) {
-    const senderAccount = stateManager.getAccount(senderPubKey);
+    const senderAccount = accountTree.getAccount(senderPubKey);
     if (!senderAccount || senderAccount.nonce + 1 !== transactionNonce) {
         throw new Error('Invalid nonce');
     }
 }
 
 function validateBalance(senderPubKey, amount) {
-    const senderAccount = stateManager.getAccount(senderPubKey);
+    const senderAccount = accountTree.getAccount(senderPubKey);
     if (!senderAccount || senderAccount.balance < amount) {
         throw new Error('Insufficient balance');
     }
