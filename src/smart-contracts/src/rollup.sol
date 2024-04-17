@@ -16,12 +16,12 @@ contract IERC20 {
     function transfer(address recipient, uint256 value) public returns(bool) { }
 }
 
-contract Rollup is UpdateVerifier, WithdrawVerifier {
+contract Rollup is BatchVerifier, WithdrawVerifier {
     IPoseidonMerkle public poseidonMerkle;
     IERC20 public tokenContract;
 
     uint256 public currentRoot;
-    address public coordinator;
+    address public operator;
     uint256[] public pendingDeposits;
     uint256 public queueNumber;
     uint256 public depositSubtreeHeight;
@@ -46,7 +46,7 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
         poseidonMerkle = IPoseidonMerkle(_poseidonMerkle);
         currentRoot = poseidonMerkle.zeroCache(BAL_DEPTH);
 
-        coordinator = msg.sender;
+        operator = msg.sender;
 
         numTokens = 1;  // Rollup starts supporting ETH by default
 
@@ -55,20 +55,16 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
         updateNumber = 0;
     }
 
-    modifier onlyCoordinator(){
-        assert(msg.sender == coordinator);
+    modifier onlyOperator(){
+        assert(msg.sender == operator);
         _;
     }
 
-    function updateState(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[15] memory input) external onlyCoordinator {
-        /* 
-        input values - used for data availability to reconstruct the chain
-        array.length = 3 (newRoot, txRoot, oldRoot) + 3 * 2 ** TX_DEPTH (the from_index, to_index and amount arrays)
-        */
-        // Can only update forward
+    function updateState(uint[2] calldata a, uint[2][2] calldata b, uint[2] calldata c, uint[15] calldata input) external onlyOperator {
+
         require(currentRoot == input[2]);  // Input does not match current root
         // Validate proof
-        require(verifyUpdateProof(a, b, c, input));  // SNARK proof is invalid
+        require(verifyProof(a, b, c, input));  // SNARK proof is invalid
         // Update merkle root
         currentRoot = input[0];
         updateNumber++;
@@ -80,8 +76,8 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
 
         if ( tokenType == 0 ) {
             require(
-                msg.sender == coordinator,
-                "Reserved for coordinator"
+                msg.sender == operator,
+                "Reserved for operator"
             ); 
             require(
                 amount == 0 && msg.value == 0
@@ -136,7 +132,7 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
         }
     }
 
-    function processDeposits(uint subtreeDepth, uint[] memory subtreePosition, uint[] memory subtreeProof) external onlyCoordinator returns(uint256){
+    function processDeposits(uint subtreeDepth, uint[] memory subtreePosition, uint[] memory subtreeProof) external onlyOperator returns(uint256){
         uint emptySubtreeRoot = poseidonMerkle.zeroCache(subtreeDepth); //empty subtree of height 2
         require(currentRoot == poseidonMerkle.getRootFromProof(
             emptySubtreeRoot, subtreePosition, subtreeProof)
@@ -180,9 +176,9 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
         uint256[] memory position,
         uint256[] memory proof,
         address recipient,
-        uint256[2] memory a,
-        uint256[2][2] memory b,
-        uint256[2] memory c
+        uint256[2] calldata a,
+        uint256[2][2] calldata b,
+        uint256[2] calldata c
     ) public {
         require(txInfo[7] > 0, "Invalid token type");
 
@@ -198,7 +194,7 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
         msgArray[0] = txInfo[5];
         msgArray[1] = uint256(uint160(recipient));
 
-        require(verifyWithdrawProof(
+        require(this.verifyWithdrawProof(
             a, b, c,
             [txInfo[0], txInfo[1], poseidonMerkle.hashPoseidon(msgArray)]
             ),
@@ -227,7 +223,7 @@ contract Rollup is UpdateVerifier, WithdrawVerifier {
         pendingTokens[tokenContractAddress] = true;
     }
 
-    function approveToken(address tokenContractAddress) external onlyCoordinator {
+    function approveToken(address tokenContractAddress) external onlyOperator {
         require(pendingTokens[tokenContractAddress]);  // Token was not registered
         numTokens++;
         registeredTokens[numTokens] = tokenContractAddress;
