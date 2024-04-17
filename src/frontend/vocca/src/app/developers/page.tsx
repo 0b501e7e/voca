@@ -31,7 +31,7 @@ const DevelopersPage = () => {
               wagmi, and ethers for creating a seamless interface and
               communication layer with the blockchain backend, whilst working in tandem with on the operator node.
             </p>
-            <span>zak.smith2@mail.dcu.ie</span>
+            <span className={styles.highlightedEmail}>zak.smith2@mail.dcu.ie</span>
           </div>
         </section>
 
@@ -53,7 +53,7 @@ const DevelopersPage = () => {
               wrote the circuits for the zk-rollup, which has been crucial in
               achieving the project's goals.
             </p>
-            <span>senan.warnock2@mail.dcu.ie</span>
+            <span className={styles.highlightedEmail}>senan.warnock2@mail.dcu.ie</span>
           </div>
         </section>
       </main>

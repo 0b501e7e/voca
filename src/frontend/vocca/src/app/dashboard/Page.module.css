@@ -66,11 +66,11 @@
   text-align: center;
 }
 
-.walletSection {
+.depositSection, .walletSection {
   display: flex;
-  justify-content: space-around;
-  align-items: flex-start; /* Align items at the start of the cross axis */
-  margin: 20px 0;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0px;
 }
 
 .walletContent,
@@ -118,13 +118,6 @@
 
 .walletButton:hover {
   background-color: #fcd535;
-}
-
-.depositSection {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 20px 0px;
 }
 
 .imageDiv {
@@ -202,7 +195,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .depositSection {
+  .depositSection, .walletSection {
     flex-direction: column;
   }
 
