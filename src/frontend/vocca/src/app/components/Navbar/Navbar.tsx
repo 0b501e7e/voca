@@ -4,9 +4,18 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Navbar.module.css";
+import { useWeb3 } from "../../../context/web3modal";
 
 const Navbar = () => {
   const [showNav, setShowNav] = useState(false);
+  const { connect, disconnect, account } = useWeb3();
+
+  // for display purposes only
+  const shortenAddress = (address) => {
+    return `${address.substring(0, 6)}...${address.substring(
+      address.length - 4
+    )}`;
+  };
 
   useEffect(() => {
     console.log("showNav state is now:", showNav);
@@ -51,7 +60,21 @@ const Navbar = () => {
             <Link href="/documentation">Documentation</Link>
           </div>
         </li>
-      <w3m-button />
+        {account ? (
+          <div className={styles.accountInfo}>
+            <button className={styles.navButton} onClick={disconnect}>
+              Disconnect
+            </button>
+            <span className={styles.accountAddress}>
+              {shortenAddress(account)}
+            </span>
+          </div>
+        ) : (
+          <button className={styles.navButton} onClick={connect}>
+            Connect Wallet
+          </button>
+        )}
+        {/* <w3m-button /> */}
       </ul>
     </nav>
   );
