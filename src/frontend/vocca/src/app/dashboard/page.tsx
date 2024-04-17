@@ -1,45 +1,92 @@
 "use client";
 
-import React, { useState, useContext } from "react";
-import styles from "./Page.module.css";
+import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
 import Image from "next/image";
-import { eddsa } from "circomlibjs"; // Import the necessary cryptography functions
-import { useWallet } from "../../context";
+import styles from "./Page.module.css";
+import { eddsa } from "circomlibjs";
+import { useWallet } from "../../context/web3modal";
 
 const DashboardPage = () => {
-  const { ethAddress } = useWallet(); // Access the Ethereum address from context
+  const { ethAddress, provider } = useWallet(); // Access the provider from context
+  // Log provider and ethAddress
+  console.log("Provider: ", provider ? 'Connected' : 'Not connected');
+  console.log("Ethereum Address: ", ethAddress);
   const [privateKey, setPrivateKey] = useState("");
   const [publicKey, setPublicKey] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
+  const [tokenType, setTokenType] = useState("");
   const [error, setError] = useState(null);
+
+  // Placeholder values
+  // const contractAddress = '0xrollupAddress';
+  // const contractABI = [];  ABI here
+
+  // useEffect(() => {
+  //   if (provider && ethAddress && contractAddress && contractABI.length > 0) {
+  //     const signer = provider.getSigner();
+  //     const contract = new ethers.Contract(contractAddress, contractABI, signer);
+  //     setContract(contract);
+  //   }
+  // }, [provider, ethAddress, contractAddress, contractABI]);
 
   function generateKeys() {
     if (!ethAddress) {
       setError("Please connect your Ethereum wallet first.");
       return;
     }
-    // Generate private key based on the Ethereum wallet address
     const seed = ethAddress; // Use Ethereum address as seed
     const prvKey = Buffer.from(seed.slice(2), "hex"); // Convert hex to Buffer
     setPrivateKey(prvKey.toString("hex"));
 
     // Generate public key using the private key
     const pubKey = eddsa.prv2pub(prvKey);
-    // Assuming pubKey is an array [x, y], where x and y are BigInt
-    const pubKeyHex = pubKey.map((coord) => coord.toString(16)).join(""); // Convert each coordinate to hex and concatenate
+    const pubKeyHex = pubKey.map((coord) => coord.toString(16)).join("");
     setPublicKey(pubKeyHex);
   }
 
   const handleDeposit = async (e) => {
     e.preventDefault();
-    if (!privateKey || !publicKey) {
-      setError("No keys available, please generate your wallet first.");
+    let errorMessage = "Deposit Request is missing parameters: ";
+
+    if (!provider) {
+      errorMessage += "Provider is not ready. ";
+    }
+    if (!privateKey) {
+      errorMessage += "Private key is missing. ";
+    }
+    if (!publicKey) {
+      errorMessage += "Public key is missing. ";
+    }
+    if (!depositAmount) {
+      errorMessage += "Deposit amount is missing. ";
+    }
+
+    if (errorMessage) {
+      setError(errorMessage.trim());
       return;
     }
 
-    console.log(`Depositing ${depositAmount} with public key: ${publicKey}`);
-    alert(`Deposit of ${depositAmount} was successful!`);
-    setDepositAmount(""); // Reset deposit amount after successful operation
+    try {
+      const signer = provider.getSigner();
+      const contract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
+      const depositTx = await contract.deposit(
+        [publicKey, publicKey], // This needs to match contract expectations
+        depositAmount,
+        tokenType,
+        { value: ethers.utils.parseEther(depositAmount.toString()) }
+      );
+      await depositTx.wait();
+      alert("Deposit successful!");
+      setDepositAmount("");
+    } catch (err) {
+      setError("Deposit failed: " + err.message);
+      console.error("Deposit error:", err);
+    }
   };
 
   return (
