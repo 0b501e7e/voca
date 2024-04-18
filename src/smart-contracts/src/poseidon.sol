@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.0;
 
 // For our rollup contract we will be using the best SNARK hashing function, Poseidon.
 // We will need to hash a different number of inputs for each case (always uint): 2, 5 or 8.
