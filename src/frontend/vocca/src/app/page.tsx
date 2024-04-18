@@ -1,5 +1,5 @@
 import React from "react";
-import styles from './Page.module.css';
+import styles from "./Page.module.css";
 import Image from "next/image"; // Import the Image component
 import img1 from "../../public/off-chain.png";
 import img2 from "../../public/gaurd.png";
