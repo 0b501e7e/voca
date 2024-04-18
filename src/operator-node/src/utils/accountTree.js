@@ -1,13 +1,25 @@
 const Tree = require("./tree.js");
 const Transaction = require("../models/Transaction.js");
+const Account = require("../models/Account.js");
 
 module.exports = class AccountTree extends Tree{
-    constructor(
-        _accounts
-    ){
-        super(_accounts.map(x => x.hashAccount()))
-        this.accounts = _accounts
+    constructor(_accounts) {
+        try {
+            super(_accounts.map(x => x.hashAccount()));
+            this.accounts = _accounts;
+        } catch (error) {
+            console.error('Error constructing AccountTree:', error);
+            console.error('Account causing error:', _accounts.find(acc => {
+                try {
+                    acc.hashAccount();
+                } catch (e) {
+                    return true;
+                }
+                return false;
+            }));
+        }
     }
+
 
     processTxArray(txTree){
 

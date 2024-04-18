@@ -45,3 +45,5 @@ class BatchProcessor {
         console.log("Batch processed:", transactions.length, "transactions");
     }
 }
+
+module.exports = BatchProcessor;

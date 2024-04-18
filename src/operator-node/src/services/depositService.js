@@ -7,10 +7,13 @@ const { poseidon } = require('circomlibjs');
 const Account = require('../models/Account');
 const { stringifyBigInts, unstringifyBigInts } = require('../utils/stringifybigint');
 
+const privateKey = process.env.PRIVATE_KEY;
+const provider = new ethers.WebSocketProvider(process.env.PROVIDER_URL);
+const signer = new ethers.Wallet(privateKey, provider);
+
 class DepositService {
-    constructor(contractAddress, abi, providerUrl, accountTree) {
-        this.provider = new ethers.providers.JsonRpcProvider(providerUrl);
-        this.contract = new ethers.Contract(contractAddress, abi, this.provider.getSigner());
+    constructor(contractAddress, abi, accountTree) {
+        this.contract = new ethers.Contract(contractAddress, abi, signer);
         this.pendingDeposits = [];
         this.subtreeHashes = [];
         this.accountIdx = 2;
@@ -25,7 +28,7 @@ class DepositService {
         const zeroAccount = new Account();
         const zeroHash = zeroAccount.hashAccount();
         const numLeaves = 2 ** this.BAL_DEPTH;
-        const zeroLeaves = new Array(numLeaves).fill(zeroHash);
+        const zeroLeaves = new Array(numLeaves).fill(zeroAccount);
         const zeroTree = new AccountTree(zeroLeaves);
         let zeroCache = [stringifyBigInts(zeroHash)];
         for (let i = this.BAL_DEPTH - 1; i >= 0; i--) {
@@ -38,10 +41,14 @@ class DepositService {
 
 
     listenForDepositEvents() {
-        this.contract.on('RequestDeposit', (pubKey, amount, tokenType) => {
-            console.log(`Deposit received: pubKey[${pubKey}], amount[${amount}], tokenType[${tokenType}]`);
-            this.handleDeposit({ pubKey, amount, tokenType }).catch(console.error);
-        });
+        try {
+            this.contract.on('RequestDeposit', (pubKey, amount, tokenType) => {
+                console.log(`Deposit received: pubKey[${pubKey}], amount[${amount}], tokenType[${tokenType}]`);
+                this.handleDeposit({ pubKey, amount, tokenType }).catch(console.error);
+            });
+        } catch (error) {
+            console.error('Error occurred while listening for deposit events:', error);
+        }
     }
 
     async handleDeposit({ pubKey, amount, tokenType }) {

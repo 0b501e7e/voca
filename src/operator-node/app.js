@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const ethers = require('ethers');
+const { eddsa } = require('circomlibjs');
 const transactionRoutes = require('./src/api/routes/transactionRoutes');
 // Import required components
 const AccountTree = require('./src/utils/accountTree');
@@ -10,33 +11,58 @@ const DepositService = require('./src/services/depositService');
 const Account = require('./src/models/Account');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const abi = require('./src/utils/Rollup.json');
+const rollupAbi = abi.abi;
+const treeHelper = require('./src/utils/treeHelper');
+
+const BAL_DEPTH = 4;
+
+
+function generatePrvkey(i){
+    prvkey = Buffer.from(i.toString().padStart(64,'0'), "hex");
+    return prvkey;  
+}
+
+function generatePubkey(prvkey){
+    pubkey = eddsa.prv2pub(prvkey);
+    return pubkey; 
+}
+
 
 // Initialize components
-const accountTree = new AccountTree();
-const accounts = [];
+
 const zeroAccount = new Account();
-accounts.push(zeroAccount);
-const coordinatorPrvkey = process.env.COORDINATOR_PRIVATE_KEY;
-const coordinatorPubkey = process.env.COORDINATOR_PUBLIC_KEY;
-const coordinator = new Account(
-    1, coordinatorPubkey[0], coordinatorPubkey[1],
-    0, 0, 0, coordinatorPrvkey
+const operatorPrvkey = generatePrvkey(1);
+const operatorPubkey = generatePubkey(operatorPrvkey);
+const operator = new Account(
+    1, operatorPubkey[0], operatorPubkey[1],
+    0, 0, 0, operatorPrvkey
 );
-accounts.push(coordinator);
-const depositService = new DepositService(process.env.CONTRACT_ADDRESS, process.env.CONTRACT_ABI, process.env.PROVIDER_URL, accountTree, accounts);
+let accounts = [zeroAccount, operator];
+accounts = treeHelper.padArray(accounts, zeroAccount, 2 ** BAL_DEPTH)
+console.log(accounts.map(acc => {
+    try {
+        return { hashAccountResult: acc.hashAccount() };
+    } catch (e) {
+        return { error: e.message };
+    }
+}));
+console.log('accounts', accounts);
+
+const accountTree = new AccountTree(accounts);
+
+const depositService = new DepositService(process.env.CONTRACT_ADDRESS, rollupAbi, accountTree, accounts);
 const transactionPool = new TransactionPool();
 const batchProcessor = new BatchProcessor(accountTree, transactionPool, 4);
 
-// Setup application middleware and routes
 app.use(express.json());
-app.use('/transactions', transactionRoutes(accountTree, transactionPool, batchProcessor)); // Assuming you adjust routes to use these instances
+app.use('/transactions', transactionRoutes);
 
 app.get('/', (req, res) => {
     res.send('Operator Node is running');
 });
 
 
-// Start server
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
 });
