@@ -11,10 +11,8 @@ const Navbar = () => {
   const { connect, disconnect, account } = useWeb3();
 
   // for display purposes only
-  const shortenAddress = (address) => {
-    return `${address.substring(0, 6)}...${address.substring(
-      address.length - 4
-    )}`;
+  const shortenAddress = (address: string) => {
+    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
   useEffect(() => {

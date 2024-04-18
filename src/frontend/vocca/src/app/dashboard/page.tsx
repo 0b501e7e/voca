@@ -4,38 +4,45 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Image from "next/image";
 import styles from "./Page.module.css";
-import { eddsa } from "circomlibjs";
-import { useWallet } from "../../context/web3modal";
+import { Eddsa as eddsa  } from "circomlibjs";
+import { useWeb3 } from "../../context/web3modal";  
 
 const DashboardPage = () => {
-  const { ethAddress, provider } = useWallet(); // Access the provider from context
-  // Log provider and ethAddress
-  console.log("Provider: ", provider ? 'Connected' : 'Not connected');
-  console.log("Ethereum Address: ", ethAddress);
+  const { connect, provider, account } = useWeb3(); // Adjusted to use updated context hooks
   const [privateKey, setPrivateKey] = useState("");
   const [publicKey, setPublicKey] = useState("");
   const [depositAmount, setDepositAmount] = useState("");
   const [tokenType, setTokenType] = useState("");
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
+  const [contract, setContract] = useState();
 
-  // Placeholder values
-  // const contractAddress = '0xrollupAddress';
-  // const contractABI = [];  ABI here
+  // Replace with actual contract address and ABI
+  const contractAddress = '0xROLLUP_ADDRESS';
+  const contractABI = []; // Contract ABI here
 
   // useEffect(() => {
-  //   if (provider && ethAddress && contractAddress && contractABI.length > 0) {
+  //   if (provider && account && contractAddress && contractABI.length > 0) {
   //     const signer = provider.getSigner();
-  //     const contract = new ethers.Contract(contractAddress, contractABI, signer);
-  //     setContract(contract);
+  //     const newContract = new ethers.Contract(contractAddress, contractABI, signer);
+  //     setContract(newContract);
   //   }
-  // }, [provider, ethAddress, contractAddress, contractABI]);
+  // }, [provider, account, contractAddress, contractABI]);
+
+  // Reset keys when the wallet disconnects
+  useEffect(() => {
+    if (!account) { // If there's no account, it means the wallet is disconnected
+      setPrivateKey("");
+      setPublicKey("");
+      console.log("Wallet disconnected, keys reset.");
+    }
+  }, [account]); // Dependency array includes account to react on its changes
 
   function generateKeys() {
-    if (!ethAddress) {
+    if (!account) {
       setError("Please connect your Ethereum wallet first.");
       return;
     }
-    const seed = ethAddress; // Use Ethereum address as seed
+    const seed = account; // Use Ethereum address as seed
     const prvKey = Buffer.from(seed.slice(2), "hex"); // Convert hex to Buffer
     setPrivateKey(prvKey.toString("hex"));
 
@@ -47,38 +54,16 @@ const DashboardPage = () => {
 
   const handleDeposit = async (e) => {
     e.preventDefault();
-    let errorMessage = "Deposit Request is missing parameters: ";
-
-    if (!provider) {
-      errorMessage += "Provider is not ready. ";
-    }
-    if (!privateKey) {
-      errorMessage += "Private key is missing. ";
-    }
-    if (!publicKey) {
-      errorMessage += "Public key is missing. ";
-    }
-    if (!depositAmount) {
-      errorMessage += "Deposit amount is missing. ";
-    }
-
-    if (errorMessage) {
-      setError(errorMessage.trim());
+    if (!provider || !privateKey || !publicKey || !depositAmount || !tokenType) {
+      setError("Missing data for deposit.");
       return;
     }
 
     try {
-      const signer = provider.getSigner();
-      const contract = new ethers.Contract(
-        contractAddress,
-        contractABI,
-        signer
-      );
       const depositTx = await contract.deposit(
         [publicKey, publicKey], // This needs to match contract expectations
-        depositAmount,
-        tokenType,
-        { value: ethers.utils.parseEther(depositAmount.toString()) }
+        ethers.utils.parseEther(depositAmount.toString()), // Ensure proper formatting
+        tokenType
       );
       await depositTx.wait();
       alert("Deposit successful!");
