@@ -18,7 +18,7 @@ const DocumentationPage = () => {
           </div>
           <div className={styles.infoDiv}>
             <h2>API Reference</h2>
-            <p>Detailed descriptions of APIs, including endpoints, request types, and response formats.</p>
+            <p>API Details, including endpoints, request types, and response formats.</p>
           </div>
           <div className={styles.infoDiv}>
             <h2>Examples</h2>
