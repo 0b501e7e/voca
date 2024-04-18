@@ -8,9 +8,7 @@ const DevelopersPage = () => {
       <header className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>About Us (The Developers)</h1>
         <p className={styles.infoParagraph}>
-          Meet the two creative minds, friends since their first year, sharing
-          an interest in cryptocurrency, innovative technology and great craic
-          !.
+        Meet Zak and Senan, two friends from Dublin City University with a passion for blockchain technology and software development, bonded over their curiosity and ambition.
         </p>
       </header>
       <main>
@@ -27,11 +25,9 @@ const DevelopersPage = () => {
             <h2 className={styles.developerName}>Zak Smith</h2>
             <p className={styles.developerRole}>Frontend Developer</p>
             <p className={styles.developerBio}>
-              Specializing in the frontend development, utilized Next.js 14,
-              wagmi, and ethers for creating a seamless interface and
-              communication layer with the blockchain backend, whilst working in tandem with on the operator node.
+            Zak leads the frontend aspects of our project, using Next.js and Ethers to create the seamless user interfaces that integrate smoothly with our blockchain operations. His work ensures that users experience fluid and intuitive interactions with our platform.
             </p>
-            <span>zak.smith2@mail.dcu.ie</span>
+            <a href="mailto:zak.smith2@mail.dcu.ie" className={styles.highlightedEmail}>zak.smith2@mail.dcu.ie</a>
           </div>
         </section>
 
@@ -48,12 +44,9 @@ const DevelopersPage = () => {
             <h2 className={styles.developerName}>Senan Warnock</h2>
             <p className={styles.developerRole}>Backend Developer</p>
             <p className={styles.developerBio}>
-              developed the backend systems, specializing in zk-rollups and
-              smart contracts to enhance transaction efficiency and security.
-              wrote the circuits for the zk-rollup, which has been crucial in
-              achieving the project's goals.
+            Senan focuses on the backend, developing robust smart contracts and zk-rollup solutions. His expertise in cryptographic techniques and Ethereum blockchain management significantly enhances transaction security and efficiency.
             </p>
-            <span>senan.warnock2@mail.dcu.ie</span>
+            <a href="mailto:senan.warnock2@mail.dcu.ie" className={styles.highlightedEmail}>senan.warnock2@mail.dcu.ie</a>
           </div>
         </section>
       </main>
