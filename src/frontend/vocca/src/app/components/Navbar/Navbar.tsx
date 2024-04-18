@@ -23,7 +23,7 @@ const Navbar = () => {
     <nav className={styles.navbar}>
       <div className={styles.navLogo}>
         <span>VOCA</span>
-        <Image src="/logo-removebg.png" alt="Logo" width={60} height={60} />
+        <Image src="/logo-removebg.png" alt="Logo" width={100} height={100} />
       </div>
 
       <div
