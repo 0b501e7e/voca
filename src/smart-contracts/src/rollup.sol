@@ -135,7 +135,7 @@ contract Rollup is BatchVerifier, WithdrawVerifier {
     function processDeposits(uint subtreeDepth, uint[] memory subtreePosition, uint[] memory subtreeProof) external onlyOperator returns(uint256){
         uint emptySubtreeRoot = poseidonMerkle.zeroCache(subtreeDepth); //empty subtree of height 2
         require(currentRoot == poseidonMerkle.getRootFromProof(
-            emptySubtreeRoot, subtreePosition, subtreeProof)
+            emptySubtreeRoot, subtreePosition, subtreeProof), "Specified subtree is not empty"
         );  // Specified subtree is not empty
         currentRoot = poseidonMerkle.getRootFromProof(
             pendingDeposits[0], subtreePosition, subtreeProof);

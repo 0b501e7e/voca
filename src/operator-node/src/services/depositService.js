@@ -4,12 +4,17 @@ const ethers = require('ethers');
 const AccountTree = require('../utils/accountTree');
 const treeHelper = require('../utils/treeHelper');
 const { poseidon } = require('circomlibjs');
+const abi = require('../utils/Rollup.json').abi;
 const Account = require('../models/Account');
 const { stringifyBigInts, unstringifyBigInts } = require('../utils/stringifybigint');
 
 const privateKey = process.env.PRIVATE_KEY;
 const provider = new ethers.WebSocketProvider(process.env.PROVIDER_URL);
 const signer = new ethers.Wallet(privateKey, provider);
+
+const txProvder = new ethers.JsonRpcProvider(process.env.DEPLOY_PROVIDER_URL);
+const txSigner = new ethers.Wallet(privateKey, txProvder);
+const depositTx = new ethers.Contract(process.env.CONTRACT_ADDRESS, abi, txSigner);
 
 class DepositService {
     constructor(contractAddress, abi, accountTree) {
@@ -30,6 +35,7 @@ class DepositService {
         const numLeaves = 2 ** this.BAL_DEPTH;
         const zeroLeaves = new Array(numLeaves).fill(zeroAccount);
         const zeroTree = new AccountTree(zeroLeaves);
+        console.log('zero root:', stringifyBigInts(zeroTree.root));
         let zeroCache = [stringifyBigInts(zeroHash)];
         for (let i = this.BAL_DEPTH - 1; i >= 0; i--) {
             zeroCache.unshift(stringifyBigInts(zeroTree.innerNodes[i][0]));
@@ -55,20 +61,14 @@ class DepositService {
         this.pendingDeposits.push({ pubKey, amount, tokenType });
 
         // Process in batches of 4 (for BAL_DEPTH of 4)
-        if (this.pendingDeposits.length >= 4) {
+        if (this.pendingDeposits.length > 4) {
             await this.processDepositsBatch();
         }
     }
 
     async processDepositsBatch() {
 
-        // need to figure out a way to account for subtree position for the proof
-
-        // const accounts = this.pendingDeposits.splice(0, 4).map(({ pubKey, amount, tokenType }) => {
-        //     const acc = new Account(this.accountIdx++, pubKey[0], pubKey[1], amount, 0, tokenType);
-        //     accounts.push(acc);
-        //     return acc;
-        // });
+        const numLeaves = 2 ** this.BAL_DEPTH;
 
         const pendingDeposits = this.pendingDeposits.splice(0, 4);
         const pendingDepositsAccounts = [];
@@ -86,17 +86,21 @@ class DepositService {
         this.subtreeHashes.push(subtreeRoot);
         // after we have the proof, we should check the batch index to determine how many subtrees we need to fill
         // we should probably store each subtree hash in an array so we can progressively build the tree
-        const subtreeProof = zeroCache.slice(1, BAL_DEPTH - Math.log2(4) + 1).reverse();
+        const subtreeProof = this.zeroCache.slice(1, this.BAL_DEPTH - Math.log2(4) + 1).reverse().map(n => n.toString());
         if (this.batchIdx > 0) {
             for (let i = 0; i < this.batchIdx; i++) {
                 subtreeProof[i] = stringifyBigInts(this.subtreeHashes[i]);
             }
         }
-        const paddedAccounts = treeHelper.padArray(accounts, zeroAccount, numLeaves);
+        const paddedAccounts = treeHelper.padArray(accounts, new Account(), numLeaves);
         const newTree = new AccountTree(paddedAccounts)
-        const pos = treeHelper.idxToBinaryPos(this.batchIdx++, BAL_DEPTH - Math.log2(4));
-
-        await this.contract.processDeposits(2, pos, subtreeProof);
+        const pos = treeHelper.idxToBinaryPos(this.batchIdx++, this.BAL_DEPTH - Math.log2(4));
+        console.log('Processing deposits for batch:', this.batchIdx - 1, 'with pos:', pos, 'and subtreeProof:', subtreeProof);
+        // read the operator address from smart contract
+        console.log('Operator address:', await depositTx.operator());
+        console.log('current root: ', await depositTx.currentRoot());
+        console.log('pending deposit root:', await depositTx.pendingDeposits());
+        await depositTx.processDeposits(2, pos, subtreeProof);
 
         // if the call was successful, update the account tree
         this.accountTree = newTree;
