@@ -1,7 +1,7 @@
 .navbar {
   position: sticky;
   top: 0;
-  z-index: 1000; /* Ensure the navbar is above other content */
+  z-index: 999;
   background-color: #121212;
   height: 60px;
   display: flex;
@@ -128,7 +128,7 @@
 
 @media (max-width: 600px) {
   .navbar {
-    margin-bottom: 100px;
+    margin-bottom: 20%vh;
   }
 
   .navLinks {

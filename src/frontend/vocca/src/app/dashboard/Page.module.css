@@ -29,37 +29,6 @@
   line-height: 1.3;
 }
 
-.transactionsTable {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.transactionsTable th {
-  position: sticky;
-  top: 0;
-  background-color: rgba(3, 125, 214, 0.5);
-}
-
-.transactionsTable th,
-.transactionsTable td {
-  padding: 8px;
-}
-
-.transactionsTable tr {
-  border-top: 1px solid rgba(221, 221, 221, 0.7);
-  border-bottom: 1px solid rgba(221, 221, 221, 0.7);
-}
-
-.transactionsTable tr:hover {
-  background-color: rgba(
-    3,
-    125,
-    214,
-    0.2
-  ); /* Adjusts only the background opacity */
-}
-
 .errorMessage {
   color: red;
   margin: 20px 0;
@@ -242,7 +211,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 600px) {
-  .depositSection, .walletSection {
+  .depositSection, .walletSection, .transactionSection {
     flex-direction: column;
   }
 
