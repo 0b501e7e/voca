@@ -5,6 +5,10 @@ import { ethers } from "ethers";
 import Image from "next/image";
 import styles from "./Page.module.css";
 import { useWeb3 } from "../../context/web3modal";
+import RollupContract from "../../contracts/Rollup.json";
+import { Fade } from "react-awesome-reveal";
+import CopyButton from '../components/CopyButton/CopyButton';
+
 
 // Directly require circomlib to bypass TypeScript type checks
 const circomlib = require("circomlibjs");
@@ -21,16 +25,22 @@ const DashboardPage = () => {
   const [contract, setContract] = useState();
 
   // Replace with actual contract address and ABI
-  const contractAddress = "0xROLLUP_ADDRESS";
-  const contractABI = []; // Contract ABI here
+  const contractAddress = "";
+  const contractABI = RollupContract.abi;
+  // console.log(contractABI);
 
-  // useEffect(() => {
-  //   if (provider && account && contractAddress && contractABI.length > 0) {
-  //     const signer = provider.getSigner();
-  //     const newContract = new ethers.Contract(contractAddress, contractABI, signer);
-  //     setContract(newContract);
-  //   }
-  // }, [provider, account, contractAddress, contractABI]);
+  useEffect(() => {
+    if (provider && account && contractAddress && contractABI.length > 0) {
+      const signer = provider.getSigner();
+      const newContract = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        signer
+      );
+      setContract(newContract);
+      console.log("Contract instantiated:", newContract);
+    }
+  }, [provider, account, contractAddress, contractABI]);
 
   // Reset keys when the wallet disconnects
   useEffect(() => {
@@ -63,18 +73,27 @@ const DashboardPage = () => {
     setPublicKey(pubKeyHex);
   }
 
-  const handleDeposit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleDeposit = async (e) => {
     e.preventDefault();
-    if (
-      !provider ||
-      !privateKey ||
-      !publicKey ||
-      !depositAmount ||
-      !tokenType ||
-      !contract
-    ) {
+    if (!provider || !publicKey || !depositAmount || !tokenType || !contract) {
       setError("Missing data for deposit or contract not loaded.");
       return;
+    }
+
+    try {
+      const transactionResponse = await contract.deposit(
+        [publicKey, publicKey],
+        ethers.utils.parseUnits(depositAmount, "ether"), // Assuming 'ether' as the unit
+        tokenType,
+        {
+          value: ethers.utils.parseUnits(depositAmount, "ether"), // Sending value along with the transaction
+        }
+      );
+      await transactionResponse.wait(); // Wait for the transaction to be mined
+      alert("Deposit successful!");
+    } catch (error) {
+      setError(`Deposit failed: ${error.message}`);
+      console.error("Deposit error:", error);
     }
   };
 
@@ -93,11 +112,16 @@ const DashboardPage = () => {
   return (
     <div className={styles.pageContainer}>
       <header className={styles.pageHeader}>
-        <h1 className={styles.pageTitle}>Dashboard</h1>
-        <p className={styles.infoParagraph}>
-          Manage your transactions and deposits through our zk-Rollup mechanism.
-          This dashboard provides a real-time view of blockchain operations.
-        </p>
+        <Fade triggerOnce cascade>
+          <h1 className={styles.pageTitle}>Dashboard</h1>
+        </Fade>
+        <Fade triggerOnce cascade delay={500}>
+          <p className={styles.infoParagraph}>
+            Manage your transactions and deposits through our zk-Rollup
+            mechanism. This dashboard provides a real-time view of blockchain
+            operations.
+          </p>
+        </Fade>
       </header>
       <main>
         <div className={styles.walletSection}>
@@ -110,9 +134,11 @@ const DashboardPage = () => {
               <p className={`${styles.privateKeyLabel}`} title="Private Key">
                 Private Key: <span className={styles.key}>{privateKey}</span>
               </p>
+              <CopyButton textToCopy={privateKey} />
               <p className={`${styles.publicKeyLabel}`} title="Public Key">
                 Public Key: <span className={styles.key}>{publicKey}</span>
               </p>
+              <CopyButton textToCopy={publicKey}/>
             </div>
           </div>
           <div className={styles.walletExplanation}>
