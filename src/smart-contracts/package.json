@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "chai": "^5.1.0",
+    "circomlibjs2": "npm:circomlibjs@^0.1.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.22.3"
+  }
+}
