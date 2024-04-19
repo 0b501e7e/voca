@@ -1,6 +1,7 @@
 const { ethers } = require('ethers');
 const abi = require('../utils/Rollup.json').abi;
 const { eddsa } = require('circomlibjs');
+require('dotenv').config();
 
 function generatePrvkey(i) {
     return Buffer.from(i.toString().padStart(64, '0'), "hex");
@@ -13,7 +14,7 @@ function generatePubkey(prvkey) {
 async function main() {
     const provider = new ethers.JsonRpcProvider('http://localhost:8545');
     const accounts = await provider.listAccounts();
-    const contractAddress = '0xdc64a140aa3e981100a9beca4e685f962f0cf6c9';
+    const contractAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
     const contract = new ethers.Contract(contractAddress, abi, provider);
 
     // Start from the 4th address (index 3)

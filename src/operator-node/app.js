@@ -40,18 +40,10 @@ const operator = new Account(
 );
 let accounts = [zeroAccount, operator];
 accounts = treeHelper.padArray(accounts, zeroAccount, 2 ** BAL_DEPTH)
-console.log(accounts.map(acc => {
-    try {
-        return { hashAccountResult: acc.hashAccount() };
-    } catch (e) {
-        return { error: e.message };
-    }
-}));
-console.log('accounts', accounts);
 
 const accountTree = new AccountTree(accounts);
 
-const depositService = new DepositService(process.env.CONTRACT_ADDRESS, rollupAbi, accountTree, accounts);
+const depositService = new DepositService(process.env.CONTRACT_ADDRESS, rollupAbi, accountTree);
 const transactionPool = new TransactionPool();
 const batchProcessor = new BatchProcessor(accountTree, transactionPool, 4);
 

@@ -61,7 +61,7 @@ class DepositService {
         this.pendingDeposits.push({ pubKey, amount, tokenType });
 
         // Process in batches of 4 (for BAL_DEPTH of 4)
-        if (this.pendingDeposits.length > 4) {
+        if (this.pendingDeposits.length >= 4) {
             await this.processDepositsBatch();
         }
     }
@@ -87,6 +87,7 @@ class DepositService {
         // after we have the proof, we should check the batch index to determine how many subtrees we need to fill
         // we should probably store each subtree hash in an array so we can progressively build the tree
         const subtreeProof = this.zeroCache.slice(1, this.BAL_DEPTH - Math.log2(4) + 1).reverse().map(n => n.toString());
+        console.log('subtreeProof:', subtreeProof);
         if (this.batchIdx > 0) {
             for (let i = 0; i < this.batchIdx; i++) {
                 subtreeProof[i] = stringifyBigInts(this.subtreeHashes[i]);
@@ -99,8 +100,20 @@ class DepositService {
         // read the operator address from smart contract
         console.log('Operator address:', await depositTx.operator());
         console.log('current root: ', await depositTx.currentRoot());
-        console.log('pending deposit root:', await depositTx.pendingDeposits());
-        await depositTx.processDeposits(2, pos, subtreeProof);
+        try {
+            console.log('Processing deposits...');
+            const txResponse = await depositTx.processDeposits(2, pos, subtreeProof);
+            const txReceipt = await txResponse.wait();  // waits for the transaction to be mined
+        
+            if (txReceipt.status === 1) {
+                console.log('Transaction successful:', txResponse.hash); // Correctly log the transaction hash from the response
+            } else {
+                console.log('Transaction failed without throwing an error, receipt:', txReceipt);
+            }
+        } catch (error) {
+            console.error('Error processing deposits:', error);
+        }
+        
 
         // if the call was successful, update the account tree
         this.accountTree = newTree;
