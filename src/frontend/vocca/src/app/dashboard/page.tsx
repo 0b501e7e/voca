@@ -10,22 +10,27 @@ import { Fade } from "react-awesome-reveal";
 import CopyButton from "../components/CopyButton/CopyButton";
 import DepositComponent from "../components/Deposit/DepositComponent"; // component
 import crypto from "crypto";
-import { initializeTestWallet } from "./walletService";
+import { initializeTestWallet } from "./WalletService";
 
 // Directly require circomlib to bypass TypeScript type checks
 const circomlib = require("circomlibjs");
 import { providers } from "ethers";
 const { JsonRpcProvider } = providers;
 
-const DashboardPage = () => {
-  const { providerEth, account } = useWeb3();
-  const [privateKey, setPrivateKey] = useState("");
-  const [publicKey, setPublicKey] = useState("");
-  const [tokenType, setTokenType] = useState("");
-  const [recipientAddress, setRecipientAddress] = useState("");
-  const [transferAmount, setTransferAmount] = useState("");
-  const [error, setError] = useState("");
-  const [contract, setContract] = useState();
+interface PublicKey {
+  x: string;
+  y: string;
+}
+
+const DashboardPage: React.FC = () => {
+  const { account } = useWeb3();
+  const [privateKey, setPrivateKey] = useState<string>("");
+  const [publicKey, setPublicKey] = useState<PublicKey>({ x: "", y: "" });
+  const [tokenType, setTokenType] = useState<string>("");
+  const [recipientAddress, setRecipientAddress] = useState<string>("");
+  const [transferAmount, setTransferAmount] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [contract, setContract] = useState<ethers.Contract>();
 
   // Static definitions for provider and contract address
   const provider = useMemo(
@@ -62,11 +67,10 @@ const DashboardPage = () => {
     const y = `0x${fullPublicKey.substring(2 + halfLength)}`; // Extract the 'y' part of the public key.
 
     // Set the state with the public key split into its 'x' and 'y' components.
-    setPublicKey([x, y]);
+    setPublicKey({ x, y });
     // Log the components of the public key to the console for verification.
-    console.log("Public Key Parts:", { X: x, Y: y });
-}
-
+    console.log("Public Key Parts:", { x, y });
+  }
 
   useEffect(() => {
     if (
@@ -123,7 +127,12 @@ const DashboardPage = () => {
             <button className={styles.walletButton} onClick={generateKeys}>
               Generate Wallet
             </button>
-            <button className={styles.walletButton} onClick={handleGenerateTestKeys}>Generate Test Wallet</button>
+            <button
+              className={styles.walletButton}
+              onClick={handleGenerateTestKeys}
+            >
+              Generate Test Wallet
+            </button>
 
             <div className={styles.keyDisplay}>
               <p className={`${styles.privateKeyLabel}`} title="Private Key">
@@ -131,9 +140,12 @@ const DashboardPage = () => {
               </p>
               <CopyButton textToCopy={privateKey} />
               <p className={`${styles.publicKeyLabel}`} title="Public Key">
-                Public Key: <span className={styles.key}>{publicKey}</span>
+                Public Key:{" "}
+                <span
+                  className={styles.key}
+                >{`${publicKey.x}, ${publicKey.y}`}</span>
               </p>
-              <CopyButton textToCopy={publicKey} />
+              <CopyButton textToCopy={`${publicKey.x}${publicKey.y}`} />
             </div>
           </div>
           <div className={styles.walletExplanation}>

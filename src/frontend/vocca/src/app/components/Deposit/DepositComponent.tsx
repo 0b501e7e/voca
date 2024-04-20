@@ -2,41 +2,55 @@ import React, { useState, useEffect } from "react";
 import styles from "./Deposit.module.css"; // Ensure you have appropriate CSS
 import { ethers } from "ethers";
 
-const DepositComponent = ({ contract, account, publicKey }) => {
-  const [depositAmount, setDepositAmount] = useState("");
-  const [tokenType, setTokenType] = useState("");
-  const [error, setError] = useState("");
+// Define the types for the props
+interface PublicKey {
+  x: string;
+  y: string;
+}
+
+interface DepositComponentProps {
+  contract?: ethers.Contract; // Optional because it might not be initialized yet
+  account: string | null; // Account can be null indicating no wallet is connected
+  publicKey: PublicKey; // Assuming the PublicKey type is structured with x and y strings
+}
+
+const DepositComponent: React.FC<DepositComponentProps> = ({
+  contract,
+  account,
+  publicKey,
+}) => {
+  const [depositAmount, setDepositAmount] = useState<string>("");
+  const [tokenType, setTokenType] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
   const handleDeposit = async () => {
     console.log("Attempting to deposit:");
+    // Check all fields are filled
     if (!depositAmount || !publicKey || !tokenType || !contract) {
       setError("All fields must be filled and a contract must be loaded.");
       return;
     }
 
-    // Ensure all fields are correctly filled, including publicKey as an array
-    if (!Array.isArray(publicKey) || publicKey.length !== 2) {
-      setError("Public key must be a valid array with two elements.");
-      return;
-    }
-
     // Log public key parts for debugging
-    console.log("Public Key X:", publicKey[0]);
-    console.log("Public Key Y:", publicKey[1]);
+    console.log("Public Key X:", publicKey.x);
+    console.log("Public Key Y:", publicKey.y);
 
-    // Validate that each part of the public key is a valid uint256
-    if (
-      ethers.BigNumber.from(publicKey[0]).gt(ethers.constants.MaxUint256) ||
-      ethers.BigNumber.from(publicKey[1]).gt(ethers.constants.MaxUint256)
-    ) {
-      setError("Public key parts are out of bounds for uint256");
-      return;
-    }
-
+    // Convert string publicKey parts to BigNumber to validate them
     try {
+      const x = ethers.BigNumber.from(publicKey.x);
+      const y = ethers.BigNumber.from(publicKey.y);
+
+      if (
+        x.gt(ethers.constants.MaxUint256) ||
+        y.gt(ethers.constants.MaxUint256)
+      ) {
+        setError("Public key parts are out of bounds for uint256");
+        return;
+      }
+
       const transactionResponse = await contract.deposit(
-        publicKey, // Pass the publicKey array directly
-        ethers.utils.parseUnits(depositAmount, "ether"), // Convert deposit amount to wei for ETH
+        [publicKey.x, publicKey.y], // Pass the publicKey as an array directly
+        ethers.utils.parseUnits(depositAmount, "ether"), // Convert deposit amount to wei
         tokenType,
         { value: ethers.utils.parseUnits(depositAmount, "ether") }
       );
@@ -44,7 +58,7 @@ const DepositComponent = ({ contract, account, publicKey }) => {
       alert("Deposit successful!");
       setDepositAmount(""); // Reset deposit amount
     } catch (error) {
-      setError(`Deposit failed: ${error.message}`);
+      setError(`Deposit failed: ${(error as Error).message}`);
       console.error("Deposit error:", error);
     }
   };
@@ -56,7 +70,7 @@ const DepositComponent = ({ contract, account, publicKey }) => {
   useEffect(() => {
     console.log("Contract instance:", contract);
     console.log("Account:", account);
-    console.log("--------------------------------------------------");
+    console.log("Public Key:", publicKey);
   }, [contract, account, publicKey]);
 
   return (
