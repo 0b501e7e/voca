@@ -1,0 +1,70 @@
+.depositContent{
+  flex: 1;
+  margin: 20px;
+  padding: 20px;
+  background-color: #232323;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: calc(50% - 40px); 
+  max-width: calc(50% - 40px);
+}
+
+.depositTitle {
+    color: #fcd535;
+    margin-bottom: 20px; 
+  }
+  
+  .depositInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px; 
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #121212;
+    color: white;
+  }
+  
+  .tokenSelect {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px; 
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #121212;
+    color: white;
+  }
+  
+  .depositButton {
+    width: 50%;
+    padding: 10px 20px;
+    background-color: #f0b90b;
+    color: #0b0e11;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  .depositButton:hover {
+    background-color: #fcd535;
+  }
+  
+  .withdrawButton:hover {
+    background-color: #fcd535;
+  }
+  
+  .withdrawButton {
+    width: 50%;
+    padding: 10px 20px;
+    background-color: #ccc;
+    color: #0b0e11;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+
+  .errorMessage {
+    color: red;
+    margin: 20px 0;
+    text-align: center;
+  }

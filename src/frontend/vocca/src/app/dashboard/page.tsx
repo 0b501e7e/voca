@@ -1,106 +1,99 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ethers } from "ethers";
 import Image from "next/image";
 import styles from "./Page.module.css";
 import { useWeb3 } from "../../context/web3modal";
 import RollupContract from "../../contracts/Rollup.json";
 import { Fade } from "react-awesome-reveal";
-import CopyButton from '../components/CopyButton/CopyButton';
-
+import CopyButton from "../components/CopyButton/CopyButton";
+import DepositComponent from "../components/Deposit/DepositComponent"; // component
+import crypto from "crypto";
+import { initializeTestWallet } from "./walletService";
 
 // Directly require circomlib to bypass TypeScript type checks
 const circomlib = require("circomlibjs");
+import { providers } from "ethers";
+const { JsonRpcProvider } = providers;
 
 const DashboardPage = () => {
-  const { provider, account } = useWeb3();
+  const { providerEth, account } = useWeb3();
   const [privateKey, setPrivateKey] = useState("");
   const [publicKey, setPublicKey] = useState("");
-  const [depositAmount, setDepositAmount] = useState("");
   const [tokenType, setTokenType] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [transferAmount, setTransferAmount] = useState("");
   const [error, setError] = useState("");
   const [contract, setContract] = useState();
 
-  // Replace with actual contract address and ABI
-  const contractAddress = "";
-  const contractABI = RollupContract.abi;
-  // console.log(contractABI);
+  // Static definitions for provider and contract address
+  const provider = useMemo(
+    () => new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545"),
+    []
+  );
+  const contractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
+  const contractABI = useMemo(() => RollupContract.abi, []); // Only recalculates if RollupContract changes
+
+  const handleGenerateTestKeys = () => {
+    initializeTestWallet(provider, setPrivateKey, setPublicKey);
+  };
+
+  function generateKeys() {
+    // Check if the Ethereum account is connected; if not, set an error message.
+    if (!account) {
+      setError("Please connect your Ethereum wallet first.");
+      return; // Exit the function early if no account is connected.
+    }
+
+    // Use SHA-256 to hash the connected Ethereum account to generate a unique private key, that is reproducable
+    const hashedKey = crypto.createHash("sha256").update(account).digest("hex");
+    const prvKey = "0x" + hashedKey; // Prefix the result with '0x' to denote a hexadecimal number.
+    setPrivateKey(prvKey); // Set the state with the generated private key.
+
+    // Create a new Ethereum wallet instance using the generated private key.
+    const wallet = new ethers.Wallet(prvKey);
+    // Extract the public key from the wallet, removing the '0x04' prefix typically used to indicate an uncompressed public key.
+    let fullPublicKey = wallet.publicKey.slice(2);
+
+    // Calculate the length of each part of the public key to split it into 'x' and 'y' components, for the deposit parameter in the rollup contract
+    const halfLength = (fullPublicKey.length - 2) / 2; // Subtract 2 to adjust for the missing '0x' in the length calculation.
+    const x = `0x${fullPublicKey.substring(2, 2 + halfLength)}`; // Extract the 'x' part of the public key.
+    const y = `0x${fullPublicKey.substring(2 + halfLength)}`; // Extract the 'y' part of the public key.
+
+    // Set the state with the public key split into its 'x' and 'y' components.
+    setPublicKey([x, y]);
+    // Log the components of the public key to the console for verification.
+    console.log("Public Key Parts:", { X: x, Y: y });
+}
+
 
   useEffect(() => {
-    if (provider && account && contractAddress && contractABI.length > 0) {
-      const signer = provider.getSigner();
+    if (
+      !provider ||
+      !contractAddress ||
+      !contractABI.length ||
+      !privateKey ||
+      privateKey === ""
+    ) {
+      console.log("Missing or invalid inputs for contract setup.");
+      return;
+    }
+
+    // Setup logic here
+    try {
+      const wallet = new ethers.Wallet(privateKey, provider);
       const newContract = new ethers.Contract(
         contractAddress,
         contractABI,
-        signer
+        wallet
       );
       setContract(newContract);
-      console.log("Contract instantiated:", newContract);
+      console.log("Contract instantiated with custom signer:");
+    } catch (err) {
+      console.error("Error setting up the contract with custom signer:", err);
     }
-  }, [provider, account, contractAddress, contractABI]);
-
-  // Reset keys when the wallet disconnects
-  useEffect(() => {
-    if (!account) {
-      // If there's no account, it means the wallet is disconnected
-      setPrivateKey("");
-      setPublicKey("");
-      console.log("Wallet disconnected, keys reset.");
-    }
-  }, [account]); // Dependency array includes account to react on its changes
-
-  function generateKeys() {
-    if (!account) {
-      setError("Please connect your Ethereum wallet first.");
-      return;
-    }
-    const seed = account as string; // Use Ethereum address as seed
-    if (typeof seed !== "string" || seed.length < 2) {
-      setError("Invalid account detected.");
-      return;
-    }
-    const prvKey = Buffer.from(seed.slice(2), "hex"); // Convert hex to Buffer
-    setPrivateKey(prvKey.toString("hex"));
-
-    // Generate public key using the private key
-    const pubKey = circomlib.eddsa.prv2pub(prvKey);
-    const pubKeyHex = pubKey
-      .map((coord: number) => coord.toString(16))
-      .join("");
-    setPublicKey(pubKeyHex);
-  }
-
-  const handleDeposit = async (e) => {
-    e.preventDefault();
-    if (!provider || !publicKey || !depositAmount || !tokenType || !contract) {
-      setError("Missing data for deposit or contract not loaded.");
-      return;
-    }
-
-    try {
-      const transactionResponse = await contract.deposit(
-        [publicKey, publicKey],
-        ethers.utils.parseUnits(depositAmount, "ether"), // Assuming 'ether' as the unit
-        tokenType,
-        {
-          value: ethers.utils.parseUnits(depositAmount, "ether"), // Sending value along with the transaction
-        }
-      );
-      await transactionResponse.wait(); // Wait for the transaction to be mined
-      alert("Deposit successful!");
-    } catch (error) {
-      setError(`Deposit failed: ${error.message}`);
-      console.error("Deposit error:", error);
-    }
-  };
-
-  const handleWithdraw = async () => {
-    // Placeholder for withdraw functionality
-    alert("Withdrawal function not implemented yet.");
-  };
+  }, [provider, contractAddress, contractABI, privateKey]);
 
   const handleSendTransaction = async () => {
     if (!provider || !recipientAddress || !transferAmount) {
@@ -130,6 +123,8 @@ const DashboardPage = () => {
             <button className={styles.walletButton} onClick={generateKeys}>
               Generate Wallet
             </button>
+            <button className={styles.walletButton} onClick={handleGenerateTestKeys}>Generate Test Wallet</button>
+
             <div className={styles.keyDisplay}>
               <p className={`${styles.privateKeyLabel}`} title="Private Key">
                 Private Key: <span className={styles.key}>{privateKey}</span>
@@ -138,7 +133,7 @@ const DashboardPage = () => {
               <p className={`${styles.publicKeyLabel}`} title="Public Key">
                 Public Key: <span className={styles.key}>{publicKey}</span>
               </p>
-              <CopyButton textToCopy={publicKey}/>
+              <CopyButton textToCopy={publicKey} />
             </div>
           </div>
           <div className={styles.walletExplanation}>
@@ -154,38 +149,12 @@ const DashboardPage = () => {
         </div>
 
         <div className={styles.depositSection}>
-          <div className={styles.depositContent}>
-            <h2 className={styles.depositTitle}>Make a Deposit</h2>
-            <input
-              type="text"
-              placeholder="Amount to Deposit/Withdraw"
-              value={depositAmount}
-              className={styles.depositInput}
-              onChange={(e) => setDepositAmount(e.target.value)}
-            />
-            <select
-              className={styles.tokenSelect}
-              onChange={(e) => setTokenType(e.target.value)}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select Token
-              </option>
-              <option value="1">Ethereum</option>
-              {/* Add other tokens as needed */}
-            </select>
-            <button className={styles.depositButton} onClick={handleDeposit}>
-              Deposit
-            </button>
-            {account && (
-              <button
-                className={styles.withdrawButton}
-                onClick={handleWithdraw}
-              >
-                Withdraw
-              </button>
-            )}
-          </div>
+          {/* Use DepositComponent */}
+          <DepositComponent
+            contract={contract}
+            account={account}
+            publicKey={publicKey} // This should be an array [x, y]
+          />
 
           <div className={styles.imageDiv}>
             <Image

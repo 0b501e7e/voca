@@ -1,15 +1,37 @@
 const ethers = require('ethers');
-require('dotenv').config();
+require('dotenv').config();  // Ensure this is at the top, before other requires if possible
+
 const { poseidonContract } = require('circomlibjs2');
 
+// Retrieve and validate the private key
 const privateKey = process.env.PRIVATE_KEY;
+
 console.log('Private key:', privateKey);
 
-// Configure provider and signer
-const provider = new ethers.providers.JsonRpcProvider('http://localhost:8545');
-const signer = new ethers.Wallet('0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80', provider);
+// Configure provider and signer using environment variables
+const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
+const signer = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
 
 async function deployPoseidonContracts() {
+
+    try {
+        // Check network connection
+        const network = await provider.getNetwork();
+        console.log('Connected to network:', network);
+
+        // Generate and deploy contracts as before
+        const Poseidon2ABI = poseidonContract.generateABI(2);
+        const Poseidon2Bytecode = poseidonContract.createCode(2);
+        const Poseidon2Factory = new ethers.ContractFactory(Poseidon2ABI, Poseidon2Bytecode, signer);
+        console.log('Deploying Poseidon2...');
+        const poseidon2 = await Poseidon2Factory.deploy();
+        console.log('Poseidon2 deployed to:', poseidon2.address);
+
+        // Further deployments...
+    } catch (error) {
+        console.error('Deployment failed:', error);
+    }
+    
     // Generate Poseidon Contract data
     const Poseidon2ABI = poseidonContract.generateABI(2);
     const Poseidon2Bytecode = poseidonContract.createCode(2);
