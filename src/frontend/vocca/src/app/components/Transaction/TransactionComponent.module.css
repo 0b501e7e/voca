@@ -1,0 +1,71 @@
+.transactionContent {
+    flex: 1;
+    margin: 20px;
+    padding: 20px;
+    background-color: #232323;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: calc(50% - 40px); 
+    max-width: calc(50% - 40px);
+  }
+
+  .transactionSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0px;
+  }
+
+.transactionTitle {
+    color: #fcd535;
+    margin-bottom: 20px; 
+  }
+  
+  .transactionInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px; 
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #121212;
+    color: white;
+  }
+  
+  .transactionButton {
+    width: 100%;
+    padding: 10px 20px;
+    margin-top: 10px;
+    background-color: #f0b90b;
+    color: #0b0e11;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+  }
+  
+  .transactionButton:hover {
+    background-color: #fcd535;
+  }
+  
+  
+  .imageDiv {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .tokenSelect {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px; 
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #121212;
+    color: white;
+  }
+
+  @media (max-width: 600px) {
+    .transactionSection {
+      flex-direction: column;
+    }
+  }

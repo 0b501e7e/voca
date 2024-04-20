@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.1;
 
 import "./batch_verifier.sol";
 import "./withdraw_verifier.sol";
@@ -64,7 +64,7 @@ contract Rollup is BatchVerifier, WithdrawVerifier {
 
         require(currentRoot == input[2]);  // Input does not match current root
         // Validate proof
-        require(verifyProof(a, b, c, input));  // SNARK proof is invalid
+        require(this.verifyProof(a, b, c, input));
         // Update merkle root
         currentRoot = input[0];
         updateNumber++;

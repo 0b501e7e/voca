@@ -58,10 +58,12 @@ module.exports = class AccountTree extends Tree{
 
     processTx(tx){
         const sender = this.findAccountByPubkey(tx.fromX, tx.fromY);
+        console.log('sender', sender, tx.fromX, tx.fromY);
         const indexFrom = sender.index;
         const balanceFrom = sender.balance;
 
         const receiver = this.findAccountByPubkey(tx.toX, tx.toY);
+        console.log('receiver', receiver, tx.toX, tx.toY);
         const indexTo = receiver.index;
         const balanceTo = receiver.balance;
         const nonceTo = receiver.nonce;
@@ -129,6 +131,7 @@ module.exports = class AccountTree extends Tree{
 
     checkAccountExistence(account, accountProof){
         if (!this.verifyProof(account.hash, account.index, accountProof)){
+            console.log(account);
             console.log('given account hash', account.hash)
             console.log('given account proof', accountProof)
 

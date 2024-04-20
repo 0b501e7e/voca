@@ -1,69 +1,56 @@
-// Assuming the use of CommonJS syntax for consistency
 const { validationResult } = require('express-validator');
-const { eddsa, poseidon } = require('circomlibjs');
-const Transaction = require('../models/Transaction');
-const accountTree = require('../utils/accountTree'); 
-const TransactionPool = require('../services/transactionPool');
+const Transaction  = require('../models/Transaction'); 
 
-const txPool = new TransactionPool();
 
-exports.submitTransaction = async (req, res) => {
+exports.submitTransaction = async (req, res, transactionPool) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { from, to, from_index, nonce, amount, token_type, signature } = req.body;
+    const { fromX, fromY, fromIndex, toX, toY, toIndex, nonce, amount, tokenType, signature } = req.body;
+
+    const { R8x, R8y, S } = signature;
 
     try {
-        // Validate transaction details
-        validateNonce(from, nonce);
-        validateBalance(from, amount);
-        await validateSignature(req.body, signature);
-        const newTransaction = new Transaction(from, to, from_index, nonce, amount, token_type);
-        txPool.addTransaction(newTransaction);
+        const transaction = new Transaction(
+            BigInt(fromX),
+            BigInt(fromY),
+            Number(fromIndex),
+            BigInt(toX),
+            BigInt(toY),
+            Number(toIndex),
+            Number(nonce),
+            Number(amount),
+            Number(tokenType),
+            BigInt(R8x),
+            BigInt(R8y),
+            BigInt(S)
+        );
+        transaction.checkSignature();  
 
-        return res.status(202).json({ message: 'Transaction successfully processed', transaction: newTransaction });
+        const responseTransaction = {
+            fromX: transaction.fromX.toString(),
+            fromY: transaction.fromY.toString(),
+            fromIndex: transaction.fromIndex.toString(),
+            toX: transaction.toX.toString(),
+            toY: transaction.toY.toString(),
+            toIndex: transaction.toIndex.toString(),
+            nonce: transaction.nonce.toString(),
+            amount: transaction.amount.toString(),
+            tokenType: transaction.tokenType.toString(),
+            R8x: transaction.R8x.toString(),
+            R8y: transaction.R8y.toString(),
+            S: transaction.S.toString()
+        };
+
+        transactionPool.addTransaction(transaction); 
+
+        res.status(202).json({ message: 'Transaction processed', transaction: responseTransaction });
     } catch (error) {
-        console.error(error);
-        return res.status(400).json({ message: error.message });
+        console.error('Error processing transaction:', error);
+        res.status(400).json({ message: error.message });
     }
 };
 
-async function validateSignature(transaction, signature) {
-    // Convert transaction details into a message hash, excluding the token_type
-    const msgHash = poseidon([
-        BigInt(transaction.from.x), 
-        BigInt(transaction.from.y), 
-        BigInt(transaction.to.x), 
-        BigInt(transaction.to.y), 
-        BigInt(transaction.amount), 
-        BigInt(transaction.nonce)
-    ]);
 
-    const publicKey = [BigInt(transaction.from.x), BigInt(transaction.from.y)];
-    console.log("public key: ", publicKey);
-    const sig = {
-        R8: [BigInt(signature.R8x), BigInt(signature.R8y)],
-        S: BigInt(signature.S)
-    };
-
-    const isValid = eddsa.verifyPoseidon(msgHash, sig, publicKey);
-    if (!isValid) {
-        throw new Error("Invalid signature");
-    }
-}
-
-function validateNonce(senderPubKey, transactionNonce) {
-    const senderAccount = accountTree.getAccount(senderPubKey);
-    if (!senderAccount || senderAccount.nonce + 1 !== transactionNonce) {
-        throw new Error('Invalid nonce');
-    }
-}
-
-function validateBalance(senderPubKey, amount) {
-    const senderAccount = accountTree.getAccount(senderPubKey);
-    if (!senderAccount || senderAccount.balance < amount) {
-        throw new Error('Insufficient balance');
-    }
-}

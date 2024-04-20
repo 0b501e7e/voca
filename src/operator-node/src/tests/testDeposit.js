@@ -18,9 +18,9 @@ async function main() {
     const contract = new ethers.Contract(contractAddress, abi, provider);
 
     // Start from the 4th address (index 3)
-    for (let i = 3; i < accounts.length; i++) {
+    for (let i = 2; i < accounts.length; i++) {
         const signer = new ethers.Wallet('0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d', provider); // Replace with the appropriate private key for each account
-        const privkey = generatePrvkey(i + 1); // Assuming a method to generate or retrieve private keys
+        const privkey = generatePrvkey(i); // Assuming a method to generate or retrieve private keys
         const pubkey = generatePubkey(privkey);
         const accountSigner = signer.connect(provider);
         const txResponse = await contract.connect(accountSigner).deposit(pubkey, 10, 1, { value: 10 });

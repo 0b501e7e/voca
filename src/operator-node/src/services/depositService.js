@@ -21,7 +21,7 @@ class DepositService {
         this.contract = new ethers.Contract(contractAddress, abi, signer);
         this.pendingDeposits = [];
         this.subtreeHashes = [];
-        this.accountIdx = 2;
+        this.accountIdx = 0;
         this.batchIdx = 0;
         this.BAL_DEPTH = 4;
         this.accountTree = accountTree;
@@ -72,41 +72,43 @@ class DepositService {
 
         const pendingDeposits = this.pendingDeposits.splice(0, 4);
         const pendingDepositsAccounts = [];
-        const accounts = this.accountTree.accounts.slice(0, this.accountIdx + 1);
+        const accounts = this.accountTree.accounts.slice(0, this.accountIdx);
         for (let i = 0; i < pendingDeposits.length; i++) {
             const { pubKey, amount, tokenType } = pendingDeposits[i];
-            const acc = new Account(this.accountIdx++, pubKey[0], pubKey[1], amount, 0, tokenType);
-            accounts.push(acc);
+            const acc = new Account(this.accountIdx++, pubKey[0], pubKey[1], Number(amount), 0, Number(tokenType));
+            accounts[acc.index] = acc;
             pendingDepositsAccounts.push(acc);
         }
-        // clear pending deposits slice
-        this.pendingDeposits = this.pendingDeposits.length == 4 ? [] : this.pendingDeposits.splice(4);
         const subtree = new AccountTree(pendingDepositsAccounts);
         const subtreeRoot = subtree.root;
         this.subtreeHashes.push(subtreeRoot);
         // after we have the proof, we should check the batch index to determine how many subtrees we need to fill
         // we should probably store each subtree hash in an array so we can progressively build the tree
-        const subtreeProof = this.zeroCache.slice(1, this.BAL_DEPTH - Math.log2(4) + 1).reverse().map(n => n.toString());
-        console.log('subtreeProof:', subtreeProof);
+        const subtreeProof = this.zeroCache.slice(1, this.BAL_DEPTH - Math.log2(4) + 1).reverse();
         if (this.batchIdx > 0) {
             for (let i = 0; i < this.batchIdx; i++) {
-                subtreeProof[i] = stringifyBigInts(this.subtreeHashes[i]);
+                subtreeProof[i] = this.subtreeHashes[i];
             }
         }
         const paddedAccounts = treeHelper.padArray(accounts, new Account(), numLeaves);
-        const newTree = new AccountTree(paddedAccounts)
+        console.log('root before processing deposits: ', this.accountTree.root.toString());
+        console.log('contract root before: ', await depositTx.currentRoot());
+        this.accountTree.accounts = paddedAccounts;
+        this.accountTree.leafNodes = paddedAccounts.map(acc => acc.hashAccount());
+        this.accountTree.innerNodes = this.accountTree.treeFromLeafNodes();
+        this.accountTree.root = this.accountTree.innerNodes[0][0];
+        console.log('accounts: ', this.accountTree.accounts);
+        console.log('contract root1: ', await depositTx.currentRoot());
         const pos = treeHelper.idxToBinaryPos(this.batchIdx++, this.BAL_DEPTH - Math.log2(4));
         console.log('Processing deposits for batch:', this.batchIdx - 1, 'with pos:', pos, 'and subtreeProof:', subtreeProof);
-        // read the operator address from smart contract
-        console.log('Operator address:', await depositTx.operator());
-        console.log('current root: ', await depositTx.currentRoot());
         try {
             console.log('Processing deposits...');
-            const txResponse = await depositTx.processDeposits(2, pos, subtreeProof);
+            const txResponse = await depositTx.processDeposits(2, pos, subtreeProof, {gasLimit: 1000000});
             const txReceipt = await txResponse.wait();  // waits for the transaction to be mined
         
             if (txReceipt.status === 1) {
                 console.log('Transaction successful:', txResponse.hash); // Correctly log the transaction hash from the response
+                console.log('root from contract equals root calculated? : ', this.accountTree.root, await depositTx.currentRoot());
             } else {
                 console.log('Transaction failed without throwing an error, receipt:', txReceipt);
             }
@@ -114,10 +116,6 @@ class DepositService {
             console.error('Error processing deposits:', error);
         }
         
-
-        // if the call was successful, update the account tree
-        this.accountTree = newTree;
-
     }
 
 
