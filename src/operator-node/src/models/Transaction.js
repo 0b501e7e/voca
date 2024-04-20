@@ -8,7 +8,6 @@ module.exports = class Transaction {
         _nonce, _amount, _tokenType,
         _R8x, _R8y, _S
     ) {
-        console.log(`Transaction constructor parameters:`, { _fromX, _fromY, _fromIndex, _toX, _toY, _toIndex, _nonce, _amount, _tokenType, _R8x, _R8y, _S });
 
         this.fromX = _fromX;
         this.fromY = _fromY;

@@ -61,7 +61,7 @@ async function main() {
     const provider = new ethers.JsonRpcProvider(process.env.PROVIDER_URL);
     const accounts = await provider.listAccounts();
 
-    for (let i = 3; i < 5; i++) {
+    for (let i = 2; i < accounts.length; i++) {
         const privateKey = generatePrivateKey(i);
         const publicKey = generatePublicKey(privateKey);
 
