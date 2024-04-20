@@ -9,8 +9,10 @@ import RollupContract from "../../contracts/Rollup.json";
 import { Fade } from "react-awesome-reveal";
 import CopyButton from "../components/CopyButton/CopyButton";
 import DepositComponent from "../components/Deposit/DepositComponent"; // component
+import TransactionComponent from "../components/Transaction/TransactionComponent";
+
 import crypto from "crypto";
-import { initializeTestWallet } from "./WalletService";
+import { initializeTestWallet, testWalletKeys } from "./WalletService";
 
 // Directly require circomlib to bypass TypeScript type checks
 const circomlib = require("circomlibjs");
@@ -40,9 +42,23 @@ const DashboardPage: React.FC = () => {
   const contractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
   const contractABI = useMemo(() => RollupContract.abi, []); // Only recalculates if RollupContract changes
 
-  const handleGenerateTestKeys = () => {
-    initializeTestWallet(provider, setPrivateKey, setPublicKey);
-  };
+  function handleGenerateTestWallet1() {
+    initializeTestWallet(
+      provider,
+      testWalletKeys.firstPrivateKey,
+      setPrivateKey,
+      setPublicKey
+    );
+  }
+
+  function handleGenerateTestWallet2() {
+    initializeTestWallet(
+      provider,
+      testWalletKeys.secondPrivateKey,
+      setPrivateKey,
+      setPublicKey
+    );
+  }
 
   function generateKeys() {
     // Check if the Ethereum account is connected; if not, set an error message.
@@ -99,13 +115,6 @@ const DashboardPage: React.FC = () => {
     }
   }, [provider, contractAddress, contractABI, privateKey]);
 
-  const handleSendTransaction = async () => {
-    if (!provider || !recipientAddress || !transferAmount) {
-      setError("Missing data for transaction.");
-      return;
-    }
-  };
-
   return (
     <div className={styles.pageContainer}>
       <header className={styles.pageHeader}>
@@ -129,9 +138,15 @@ const DashboardPage: React.FC = () => {
             </button>
             <button
               className={styles.walletButton}
-              onClick={handleGenerateTestKeys}
+              onClick={handleGenerateTestWallet1}
             >
-              Generate Test Wallet
+              Generate Test Wallet 1
+            </button>
+            <button
+              className={styles.walletButton}
+              onClick={handleGenerateTestWallet2}
+            >
+              Generate Test Wallet 2
             </button>
 
             <div className={styles.keyDisplay}>
@@ -178,40 +193,12 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         <div className={styles.transactionSection}>
-          <div className={styles.transactionContent}>
-            <h2 className={styles.transactionTitle}>Send Transaction</h2>
-            <input
-              type="text"
-              placeholder="Recipient Address"
-              value={recipientAddress}
-              onChange={(e) => setRecipientAddress(e.target.value)}
-              className={styles.transactionInput}
-            />
-            <input
-              type="text"
-              placeholder="Amount to Send"
-              value={transferAmount}
-              onChange={(e) => setTransferAmount(e.target.value)}
-              className={styles.transactionInput}
-            />
-            <select
-              className={styles.tokenSelect}
-              onChange={(e) => setTokenType(e.target.value)}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                Select Token
-              </option>
-              <option value="1">Ethereum</option>
-              {/* Add other tokens as needed */}
-            </select>
-            <button
-              className={styles.transactionButton}
-              onClick={handleSendTransaction}
-            >
-              Send
-            </button>
-          </div>
+          <TransactionComponent
+            provider={provider}
+            contract={contract}
+            publicKey={publicKey}
+            privateKey={privateKey}
+          />
 
           <div className={styles.imageDiv}>
             <Image

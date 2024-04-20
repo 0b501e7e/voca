@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors'); // Include CORS
 const ethers = require('ethers');
 const { eddsa } = require('circomlibjs');
 const transactionRoutes = require('./src/api/routes/transactionRoutes');
@@ -16,7 +17,6 @@ const rollupAbi = abi.abi;
 const treeHelper = require('./src/utils/treeHelper');
 
 const BAL_DEPTH = 4;
-
 
 function generatePrvkey(i){
     prvkey = Buffer.from(i.toString().padStart(64,'0'), "hex");
@@ -47,6 +47,8 @@ const depositService = new DepositService(process.env.CONTRACT_ADDRESS, rollupAb
 const transactionPool = new TransactionPool();
 const batchProcessor = new BatchProcessor(accountTree, transactionPool, 4);
 
+// app.use(express.json());
+app.use(cors());
 app.use(express.json());
 app.use('/transactions', transactionRoutes);
 

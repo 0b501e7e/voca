@@ -1,17 +1,19 @@
 // Import the ethers library for interacting with the Ethereum blockchain
 import { ethers } from 'ethers';
 
-// Function to initialize a wallet with a predefined private key from Anvil for testing purposes.
-// Useful for setting up a consistent test environment with known accounts and balances.
-export const initializeTestWallet = (provider, setPrivateKey, setPublicKey) => {
-    // Define the private key provided by Anvil for testing. Anvil is a local Ethereum network ideal for development.
-    const anvilPrivateKey = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d"; 
+// Define private keys for test wallets
+export const testWalletKeys = {
+  firstPrivateKey: "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d",
+  secondPrivateKey: "0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a"
+};
 
+// Function to initialize a wallet with a specified private key for testing purposes.
+export const initializeTestWallet = (provider, privateKey, setPrivateKey, setPublicKey) => {
     // Create a new wallet instance using the specified private key and provider.
-    const wallet = new ethers.Wallet(anvilPrivateKey, provider);
+    const wallet = new ethers.Wallet(privateKey, provider);
 
     // Store the private key in the application state using the provided setter function.
-    setPrivateKey(anvilPrivateKey);
+    setPrivateKey(privateKey);
 
     // Extract the public key from the wallet, removing the '0x04' prefix if present.
     const fullPublicKey = wallet.publicKey.slice(2); 
@@ -28,5 +30,5 @@ export const initializeTestWallet = (provider, setPrivateKey, setPublicKey) => {
 
     // Log the initialization details for debugging and verification purposes,
     // including the private key, public key components, and the wallet address.
-    console.log("Test wallet initialized with Anvil private key and account:", { privateKey: anvilPrivateKey, publicKey: {x, y}, account: wallet.address });
+    console.log("Test wallet initialized:", { privateKey, publicKey: {x, y}, account: wallet.address });
 };
