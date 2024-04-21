@@ -15,10 +15,6 @@ const Navbar = () => {
     return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
   };
 
-  useEffect(() => {
-    console.log("showNav state is now:", showNav);
-  }, [showNav]);
-
   return (
     <nav className={styles.navbar}>
       <div className={styles.navLogo}>
@@ -55,7 +51,6 @@ const Navbar = () => {
           </div>
           <div className={styles.dropdownContent}>
             <Link href="/developers">Developers</Link>
-            <Link href="/documentation">Documentation</Link>
           </div>
         </li>
         {account ? (

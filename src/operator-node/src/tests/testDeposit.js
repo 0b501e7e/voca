@@ -12,9 +12,9 @@ function generatePubkey(prvkey) {
 }
 
 async function main() {
-    const provider = new ethers.JsonRpcProvider('http://localhost:8545');
+    const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
     const accounts = await provider.listAccounts();
-    const contractAddress = '0x8A791620dd6260079BF849Dc5567aDC3F2FdC318';
+    const contractAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
     const contract = new ethers.Contract(contractAddress, abi, provider);
 
     // Start from the 4th address (index 3)

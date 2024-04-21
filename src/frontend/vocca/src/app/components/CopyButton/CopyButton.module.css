@@ -1,0 +1,16 @@
+.button {
+  padding: 4px 6px;
+  margin: 10px 0px;
+  background-color: #212121;
+  color: #f0b90b; /* Dark blue text */
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  display: inline-block;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.button:hover {
+  color: #ccc;
+}
