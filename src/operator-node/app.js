@@ -73,12 +73,9 @@ const depositService = new DepositService(process.env.CONTRACT_ADDRESS, rollupAb
 const transactionPool = new TransactionPool();
 const batchProcessor = new BatchProcessor(accountTree, transactionPool, 4);
 
-<<<<<<< HEAD
 // app.use(express.json());
 app.use(cors());
-=======
 
->>>>>>> development
 app.use(express.json());
 app.use('/transactions', createTransactionRoutes(transactionPool));
 

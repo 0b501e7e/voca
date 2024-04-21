@@ -51,7 +51,6 @@ const Navbar = () => {
           </div>
           <div className={styles.dropdownContent}>
             <Link href="/developers">Developers</Link>
-            <Link href="/documentation">Documentation</Link>
           </div>
         </li>
         {account ? (

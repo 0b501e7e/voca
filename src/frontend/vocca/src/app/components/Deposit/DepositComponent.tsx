@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import styles from "./Deposit.module.css"; // Ensure you have appropriate CSS
+import styles from "./Deposit.module.css";
 import { ethers } from "ethers";
 
-// Define the types for the props
 interface PublicKey {
   x: string;
   y: string;
 }
 
 interface DepositComponentProps {
-  contract?: ethers.Contract; // Optional because it might not be initialized yet
-  account: string | null; // Account can be null indicating no wallet is connected
-  publicKey: PublicKey; // Assuming the PublicKey type is structured with x and y strings
+  contract?: ethers.Contract;
+  account: string | null;
+  publicKey: PublicKey;
 }
 
 const DepositComponent: React.FC<DepositComponentProps> = ({
@@ -25,41 +24,40 @@ const DepositComponent: React.FC<DepositComponentProps> = ({
 
   const handleDeposit = async () => {
     console.log("Attempting to deposit:");
-    // Check all fields are filled
+    const errorMessage = "All fields must be filled and a contract must be loaded.";
     if (!depositAmount || !publicKey || !tokenType || !contract) {
-      setError("All fields must be filled and a contract must be loaded.");
+      setError(errorMessage);
+      alert(errorMessage);
       return;
     }
 
-    // Log public key parts for debugging
     console.log("Public Key X:", publicKey.x);
     console.log("Public Key Y:", publicKey.y);
 
-    // Convert string publicKey parts to BigNumber to validate them
     try {
       const x = ethers.BigNumber.from(publicKey.x);
       const y = ethers.BigNumber.from(publicKey.y);
 
-      if (
-        x.gt(ethers.constants.MaxUint256) ||
-        y.gt(ethers.constants.MaxUint256)
-      ) {
+      if (x.gt(ethers.constants.MaxUint256) || y.gt(ethers.constants.MaxUint256)) {
         setError("Public key parts are out of bounds for uint256");
         return;
       }
 
       const transactionResponse = await contract.deposit(
-        [publicKey.x, publicKey.y], // Pass the publicKey as an array directly
-        ethers.utils.parseUnits(depositAmount, "ether"), // Convert deposit amount to wei
+        [publicKey.x, publicKey.y],
+        ethers.utils.parseUnits(depositAmount, "ether"),
         tokenType,
         { value: ethers.utils.parseUnits(depositAmount, "ether") }
       );
       await transactionResponse.wait();
-      alert("Deposit successful!");
-      setDepositAmount(""); // Reset deposit amount
-    } catch (error) {
-      setError(`Deposit failed: ${(error as Error).message}`);
-      console.error("Deposit error:", error);
+      alert(`Deposit successful!\n\nDetails:\n- Amount: ${depositAmount} ETH\n- Token Type: ${tokenType}\n- Transaction Hash: ${transactionResponse.hash}`);
+
+      setDepositAmount("");
+    } catch (error: any) {  // Using 'any' for simplicity; could use more specific error handling
+      const errorMessage = `Deposit failed: ${error instanceof Error ? error.message : "Unknown error"}`;
+      setError(errorMessage);
+      console.error("Deposit error:", errorMessage);
+      alert(errorMessage);
     }
   };
 
@@ -76,10 +74,9 @@ const DepositComponent: React.FC<DepositComponentProps> = ({
   return (
     <div className={styles.depositContent}>
       <h2 className={styles.depositTitle}>Make a Deposit</h2>
-
       <input
         type="text"
-        placeholder="Amount to Deposit/Withdraw"
+        placeholder="Amount to Deposit"
         value={depositAmount}
         onChange={(e) => setDepositAmount(e.target.value)}
         className={styles.depositInput}
@@ -89,20 +86,12 @@ const DepositComponent: React.FC<DepositComponentProps> = ({
         onChange={(e) => setTokenType(e.target.value)}
         defaultValue=""
       >
-        <option value="" disabled>
-          Select Token
-        </option>
+        <option value="" disabled>Select Token</option>
         <option value="1">Ethereum</option>
-        {/* Add other tokens as needed */}
       </select>
       <button className={styles.depositButton} onClick={handleDeposit}>
         Deposit
       </button>
-      {account && (
-        <button className={styles.withdrawButton} onClick={handleWithdraw}>
-          Withdraw
-        </button>
-      )}
       {error && <div className={styles.errorMessage}>{error}</div>}
     </div>
   );

@@ -133,6 +133,20 @@ const DashboardPage: React.FC = () => {
         <div className={styles.walletSection}>
           <div className={styles.walletContent}>
             <h2 className={styles.walletTitle}>Generate Your Wallet</h2>
+
+            <div className={styles.keyDisplay}>
+              <p className={`${styles.privateKeyLabel}`} title="Private Key">
+                Private Key: <span className={styles.key}>{privateKey}</span>
+              </p>
+              <CopyButton textToCopy={privateKey} />
+              <p className={`${styles.publicKeyLabel}`} title="Public Key">
+                Public Key:{" "}
+                <span
+                  className={styles.key}
+                >{`${publicKey.x}, ${publicKey.y}`}</span>
+              </p>
+              <CopyButton textToCopy={`${publicKey.x}${publicKey.y}`} />
+            </div>
             <button className={styles.walletButton} onClick={generateKeys}>
               Generate Wallet
             </button>
@@ -148,20 +162,6 @@ const DashboardPage: React.FC = () => {
             >
               Generate Test Wallet 2
             </button>
-
-            <div className={styles.keyDisplay}>
-              <p className={`${styles.privateKeyLabel}`} title="Private Key">
-                Private Key: <span className={styles.key}>{privateKey}</span>
-              </p>
-              <CopyButton textToCopy={privateKey} />
-              <p className={`${styles.publicKeyLabel}`} title="Public Key">
-                Public Key:{" "}
-                <span
-                  className={styles.key}
-                >{`${publicKey.x}, ${publicKey.y}`}</span>
-              </p>
-              <CopyButton textToCopy={`${publicKey.x}${publicKey.y}`} />
-            </div>
           </div>
           <div className={styles.walletExplanation}>
             <h3 className={styles.walletExplanationTitle}>
@@ -193,12 +193,7 @@ const DashboardPage: React.FC = () => {
           </div>
         </div>
         <div className={styles.transactionSection}>
-          <TransactionComponent
-            provider={provider}
-            contract={contract}
-            publicKey={publicKey}
-            privateKey={privateKey}
-          />
+          <TransactionComponent publicKey={publicKey} privateKey={privateKey} />
 
           <div className={styles.imageDiv}>
             <Image

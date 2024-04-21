@@ -42,9 +42,22 @@
   margin: 20px 0px;
 }
 
-.walletContent,
 .depositContent,
 .transactionContent {
+  flex: 1;
+  margin: 20px;
+  padding: 20px;
+  background-color: #232323;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: calc(50% - 40px); 
+  max-width: calc(50% - 40px);
+}
+
+.walletContent {
+  display: flex;
+  flex-direction: column;  
+  gap: 10px;
   flex: 1;
   margin: 20px;
   padding: 20px;
