@@ -1,30 +1,51 @@
-# CA400 template repo
+# VOCA User Manual
 
-This is a template for CA400 projects.
+This user manual provides detailed instructions for setting up and operating the VOCA zero knowledge rollup. It covers the setup of the operator node as well as the deployment of the smart contracts necessary for for the network to function.
 
-## 1. Create your repo
 
-One person from your project team should fork this repo, then add other teammates as project members on GitLab.
+## Setting Up the Operator Node
 
-## 2. Name your repo appropriately
+To get the operator node up and running, follow these steps:
 
-The name of your project must be of the form `2024-ca400-XXXXXXX`, where "`XXXXXXX`"
-should be replaced with your usernames (e.g. `2024-ca400-sblott-pclarke`).
-**Note** that the year should be set as appropriate to your year of study. For example, in the
-2022/2023 academic year this would change to '2023-ca400-sblott-pclarke'), 
-in the 2023/2024 academic year this would change to '2024-ca400-sblott-pclarke'), etc. 
+### 1. Install Dependencies
 
-It is the *name of your repo* which matters (not the name of your project).
+Navigate to the directory of the operator node and install the required dependencies by running: ```npm install```
 
-You can change the name of your repo on GitLab under:
 
-- Settings / General / Advanced / Change path
+### 2. Configure Environment
 
-It looks like this:
+Ensure all necessary environment variables are set by updating the `.env` file in the root directory of the operator node.
 
-![change-repo-path](./res/repo-change-path.png "Change repo path.")
+### 3. Start the Operator Node
 
-You should replace all of this file with a README describing your own project.
+Launch the operator node by running the following command in the root directory:
 
-## Additional resources
+```node app.js```
+
+This will initiate the operator node using the configurations specified in the `.env` file.
+
+## Deploying the Smart Contracts
+
+Deployment of the smart contracts involves building the contracts and deploying them via a script.
+
+### 1. Build the Contracts
+
+From the root directory of the smart contracts, execute the following command to build the smart contracts:
+
+```forge build```
+
+
+### 2. Deploy Contracts
+
+Deploy the necessary hashing and the rollup contracts by running the `poseidon.js` script:
+
+```node poseidon.js```
+
+This step deploys the contracts needed for the zk rollup operation.
+
+## Conclusion
+
+Following these steps will set up the zk rollup environment. The smart contracts will be deployed and the operator will listen for deposit events and process them as they come.
+
+
 
